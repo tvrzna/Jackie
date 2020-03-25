@@ -1,0 +1,106 @@
+package cz.tvrzna.jackie;
+
+/**
+ * Main <code>Jackie</code> class, that provides converting of objects to JSON
+ * as <code>String</code> and JSON <code>String</code> to objects.
+ *
+ * TODO: add description how to use
+ *
+ * @author michalt
+ */
+public class Jackie
+{
+
+	/**
+	 * Converts single object into JSON as <code>String</code>.
+	 *
+	 * @param <T>
+	 *          the generic type
+	 * @param object
+	 *          the object
+	 * @return the string
+	 */
+	public <T> String toJson(T object)
+	{
+		try
+		{
+			Object o = SerializationMapper.convertFromObject(object);
+			return Serializator.serialize(o);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Converts single object or array from JSON to instance of
+	 * <code>clazz</code>.
+	 *
+	 * @param <T>
+	 *          the generic type
+	 * @param json
+	 *          the json
+	 * @param clazz
+	 *          the clazz
+	 * @return the t
+	 */
+	public <T> T fromJson(String json, Class<T> clazz)
+	{
+		return fromJson(json, clazz, null, null);
+	}
+
+	/**
+	 * Converts List or array from JSON. If it converts list,
+	 * <code>subClazz</code> needs to be defined as generic type of List.
+	 *
+	 * @param <T>
+	 *          the generic type
+	 * @param json
+	 *          the json
+	 * @param clazz
+	 *          the clazz
+	 * @param subClazz
+	 *          the sub clazz
+	 * @return the t
+	 */
+	public <T> T fromJson(String json, Class<T> clazz, Class<?> subClazz)
+	{
+		return fromJson(json, clazz, subClazz, null);
+	}
+
+	/**
+	 * Converts Map from JSON. It needs to have defined <code>keyClazz</code> as
+	 * class of Key attribute and <code>valueClazz</code> as class of Value
+	 * attribute.
+	 *
+	 * @param <T>
+	 *          the generic type
+	 * @param json
+	 *          the json
+	 * @param clazz
+	 *          the clazz
+	 * @param keyClazz
+	 *          the key clazz
+	 * @param valueClazz
+	 *          the value clazz
+	 * @return the t
+	 */
+	public <T> T fromJson(String json, Class<T> clazz, Class<?> keyClazz, Class<?> valueClazz)
+	{
+		if (json == null)
+		{
+			return null;
+		}
+		try
+		{
+			Object o = Deserializator.deserialize(json);
+			return DeserializationMapper.convertToObject(o, clazz, null, keyClazz, valueClazz);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+}
