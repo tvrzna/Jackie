@@ -1,9 +1,19 @@
 # Jackie
+[![javadoc](https://javadoc.io/badge2/cz.tvrzna/jackie/0.1.0/javadoc.svg)](https://javadoc.io/doc/cz.tvrzna/jackie/0.1.0)
+
 Simple JSON serialization and deserialization from/to object.
 
 ## What is Jackie good for?
 Yet another JSON object serializer/deserializer, that is small and relatively fast (TODO: compare with gson!!!)
 
+## Installation
+```xml
+<dependency>
+    <groupId>cz.tvrzna</groupId>
+    <artifactId>jackie</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
 
 ## Example
 Let have sample object class, that defines primitive structure.
