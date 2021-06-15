@@ -40,6 +40,10 @@ public class Serializator
 		{
 			return serializeMap((Map<String, Object>) object);
 		}
+		else if (object.getClass().isArray())
+		{
+			return serializeArray((Object[]) object);
+		}
 		else
 		{
 			return serializeValue(object);
@@ -126,6 +130,31 @@ public class Serializator
 		{
 			sb.append(serialize(list.get(i)));
 			if (i < list.size() - 1)
+			{
+				sb.append(",");
+			}
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
+	/**
+	 * Serialize array.
+	 *
+	 * @param arr
+	 *          the list
+	 * @return the string
+	 * @throws Exception
+	 *           the exception
+	 */
+	private static String serializeArray(Object[] arr) throws Exception
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		for (int i = 0; i < arr.length; i++)
+		{
+			sb.append(serialize(arr[i]));
+			if (i < arr.length - 1)
 			{
 				sb.append(",");
 			}
