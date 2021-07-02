@@ -47,6 +47,10 @@ public class SerializationMapper
 		}
 		else if (object.getClass().isArray())
 		{
+			if (CommonUtils.PRIMITIVE_CLASSES.contains(object.getClass().getComponentType()))
+			{
+				return processArray(CommonUtils.convertPrimitiveArrayToObjects(object));
+			}
 			return processArray((Object[]) object);
 		}
 		else

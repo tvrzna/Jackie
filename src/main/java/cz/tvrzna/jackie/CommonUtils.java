@@ -11,9 +11,9 @@ public class CommonUtils
 {
 	protected static final String DATE_FORMAT_JSON = "yyyy-MM-dd'T'HH:mm:ss";
 	protected static final String DEFAULT_SEPARATOR = "\"";
-	protected static final List<Class<?>> SIMPLE_CLASSES = Arrays.asList(String.class, Boolean.class, Byte.class, Short.class, Integer.class, Long.class, Number.class, Float.class,
-			Double.class, Date.class, boolean.class, short.class, int.class, long.class, float.class, double.class);
-	protected static final List<Class<?>> PRIMITIVE_CLASSES = Arrays.asList(boolean.class, byte.class, short.class, int.class, long.class, float.class, double.class);
+	protected static final List<Class<?>> SIMPLE_CLASSES = Arrays.asList(String.class, Boolean.class, Byte.class, Character.class, Short.class, Integer.class, Long.class,
+			Number.class, Float.class, Double.class, Date.class, boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, double.class);
+	protected static final List<Class<?>> PRIMITIVE_CLASSES = Arrays.asList(boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, double.class);
 
 	private CommonUtils()
 	{
@@ -50,11 +50,15 @@ public class CommonUtils
 	/**
 	 * Convert array to primitive.
 	 *
-	 * @param <T> the generic type
-	 * @param list the list
-	 * @param clazz the clazz
+	 * @param <T>
+	 *          the generic type
+	 * @param list
+	 *          the list
+	 * @param clazz
+	 *          the clazz
 	 * @return the t
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *           the exception
 	 */
 	@SuppressWarnings("unchecked")
 	protected static <T> T convertArrayToPrimitive(List<?> list, Class<?> clazz) throws Exception
@@ -76,6 +80,16 @@ public class CommonUtils
 			{
 				Object o = list.get(i);
 				arr[i] = o != null ? ((Byte) o).byteValue() : null;
+			}
+			return (T) arr;
+		}
+		else if (clazz.equals(char.class))
+		{
+			char[] arr = new char[list.size()];
+			for (int i = 0; i < list.size(); i++)
+			{
+				Object o = list.get(i);
+				arr[i] = o != null ? ((Character) o).charValue() : null;
 			}
 			return (T) arr;
 		}
@@ -130,6 +144,71 @@ public class CommonUtils
 			return (T) arr;
 		}
 		throw new Exception("Unkown primitive type.");
+	}
+
+	@SuppressWarnings("unchecked")
+	protected static <T> Object[] convertPrimitiveArrayToObjects(T array) throws Exception
+	{
+		Class<?> subclazz = array.getClass().getComponentType();
+
+		List<Object> list = new ArrayList<>();
+		if (subclazz.equals(boolean.class))
+		{
+			for (boolean v : (boolean[]) array)
+			{
+				list.add(Boolean.valueOf(v));
+			}
+		}
+		else if (subclazz.equals(byte.class))
+		{
+			for (byte v : (byte[]) array)
+			{
+				list.add(Byte.valueOf(v));
+			}
+		}
+		else if (subclazz.equals(char.class))
+		{
+			for (char v : (char[]) array)
+			{
+				list.add(Character.valueOf(v));
+			}
+		}
+		else if (subclazz.equals(short.class))
+		{
+			for (short v : (short[]) array)
+			{
+				list.add(Short.valueOf(v));
+			}
+		}
+		else if (subclazz.equals(int.class))
+		{
+			for (int v : (int[]) array)
+			{
+				list.add(Integer.valueOf(v));
+			}
+		}
+		else if (subclazz.equals(long.class))
+		{
+			for (long v : (long[]) array)
+			{
+				list.add(Long.valueOf(v));
+			}
+		}
+		else if (subclazz.equals(float.class))
+		{
+			for (float v : (float[]) array)
+			{
+				list.add(Float.valueOf(v));
+			}
+		}
+		else if (subclazz.equals(double.class))
+		{
+			for (double v : (double[]) array)
+			{
+				list.add(Double.valueOf(v));
+			}
+		}
+		return list.toArray();
 	}
 
 }
