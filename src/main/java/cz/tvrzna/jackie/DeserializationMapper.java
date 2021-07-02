@@ -213,7 +213,7 @@ public class DeserializationMapper
 	 */
 	private static Class<?> getClassFromField(Field field, int index)
 	{
-		Object o = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+		Object o = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[index];
 		if (o instanceof Class)
 		{
 			return (Class<?>) o;
