@@ -79,6 +79,10 @@ public class DeserializationMapper
 		{
 			Class<?> arrSubClazz = tmpClazz.getComponentType();
 			List<?> list = convertFromList((List<Object>) object, arrSubClazz);
+			if (CommonUtils.PRIMITIVE_CLASSES.contains(arrSubClazz))
+			{
+				return CommonUtils.convertArrayToPrimitive(list, arrSubClazz);
+			}
 			return (T) list.toArray((T[]) Array.newInstance(arrSubClazz, 0));
 		}
 		else if (Map.class.isAssignableFrom(tmpClazz))
