@@ -25,6 +25,20 @@ public class JackieBuilder
 	}
 
 	/**
+	 * From string.
+	 *
+	 * @param json the json
+	 * @return the jackie element
+	 */
+	public static JackieElement fromString(String json)
+	{
+		Jackie jackie = new Jackie();
+		JackieElement result = new JackieElement();
+		result.putAll(jackie.fromJson(json, JackieElement.class));
+		return result;
+	}
+
+	/**
 	 * The Class JackieElement.
 	 *
 	 * @author michalt
