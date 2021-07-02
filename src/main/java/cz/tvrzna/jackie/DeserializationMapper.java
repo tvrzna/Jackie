@@ -48,11 +48,17 @@ public class DeserializationMapper
 	@SuppressWarnings("unchecked")
 	protected static <T> T convertToObject(Object object, Class<T> clazz, Field field, Class<?> subClazz, Class<?> subClazz2) throws Exception
 	{
-		if ((CommonUtils.SIMPLE_CLASSES.contains(clazz) || Enum.class.isAssignableFrom(clazz)) && !clazz.isArray())
+		Class<T> tmpClazz = clazz;
+		if (Object.class.equals(tmpClazz) && object != null && object.getClass() != null)
 		{
-			return (T) deserializeValue((String) object, clazz);
+			tmpClazz = (Class<T>) object.getClass();
 		}
-		else if (Collection.class.isAssignableFrom(clazz))
+
+		if ((CommonUtils.SIMPLE_CLASSES.contains(tmpClazz) || Enum.class.isAssignableFrom(tmpClazz)) && !tmpClazz.isArray())
+		{
+			return (T) deserializeValue((String) object, tmpClazz);
+		}
+		else if (Collection.class.isAssignableFrom(tmpClazz))
 		{
 			Class<?> lstSubClazz = null;
 			if (field != null)
@@ -69,13 +75,13 @@ public class DeserializationMapper
 			}
 			return (T) convertFromList((List<Object>) object, lstSubClazz);
 		}
-		else if (clazz.isArray())
+		else if (tmpClazz.isArray())
 		{
-			Class<?> arrSubClazz = clazz.getComponentType();
+			Class<?> arrSubClazz = tmpClazz.getComponentType();
 			List<?> list = convertFromList((List<Object>) object, arrSubClazz);
 			return (T) list.toArray((T[]) Array.newInstance(arrSubClazz, 0));
 		}
-		else if (Map.class.isAssignableFrom(clazz))
+		else if (Map.class.isAssignableFrom(tmpClazz))
 		{
 			Class<?> keyClazz = null;
 			Class<?> valueClazz = null;
@@ -95,7 +101,7 @@ public class DeserializationMapper
 			}
 			return (T) convertFromMap((Map<String, Object>) object, keyClazz, valueClazz);
 		}
-		return convertFromMapToObject((Map<String, Object>) object, clazz);
+		return convertFromMapToObject((Map<String, Object>) object, tmpClazz);
 	}
 
 	/**
