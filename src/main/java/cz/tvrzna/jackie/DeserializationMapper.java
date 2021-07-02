@@ -71,7 +71,7 @@ public class DeserializationMapper
 			}
 			if (lstSubClazz == null)
 			{
-				throw new Exception("Undefined subclass of collection");
+				lstSubClazz = Object.class;
 			}
 			return (T) convertFromList((List<Object>) object, lstSubClazz);
 		}
@@ -97,7 +97,8 @@ public class DeserializationMapper
 			}
 			if (keyClazz == null || valueClazz == null)
 			{
-				throw new Exception("Undefined subclass(es) of map");
+				keyClazz = Object.class;
+				valueClazz = Object.class;
 			}
 			return (T) convertFromMap((Map<String, Object>) object, keyClazz, valueClazz);
 		}
