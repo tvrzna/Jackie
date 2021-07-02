@@ -3,6 +3,7 @@ package cz.tvrzna.jackie;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,13 @@ public class SerializationMapper
 		{
 			return null;
 		}
-		else if (((CommonUtils.SIMPLE_CLASSES.contains(object.getClass()) || Enum.class.isAssignableFrom(object.getClass())) && !object.getClass().isArray()) ||
-				Map.class.isAssignableFrom(object.getClass()))
+		else if ((CommonUtils.SIMPLE_CLASSES.contains(object.getClass()) || Enum.class.isAssignableFrom(object.getClass())) && !object.getClass().isArray())
 		{
 			return object;
+		}
+		else if (Map.class.isAssignableFrom(object.getClass()))
+		{
+			return processMap(object);
 		}
 		else if (Collection.class.isAssignableFrom(object.getClass()))
 		{
@@ -53,10 +57,7 @@ public class SerializationMapper
 			}
 			return processArray((Object[]) object);
 		}
-		else
-		{
-			return processObject(object);
-		}
+		return processObject(object);
 	}
 
 	/**
@@ -123,6 +124,25 @@ public class SerializationMapper
 		for (Object obj : array)
 		{
 			result.add(convertFromObject(obj));
+		}
+		return result;
+	}
+
+	/**
+	 * Process map.
+	 *
+	 * @param map
+	 *          the map
+	 * @return the map
+	 * @throws Exception
+	 *           the exception
+	 */
+	private static Map<?, ?> processMap(Object map) throws Exception
+	{
+		Map<Object, Object> result = new HashMap<>();
+		for (Map.Entry<?, ?> entry : ((Map<?, ?>) map).entrySet())
+		{
+			result.put(entry.getKey(), convertFromObject(entry.getValue()));
 		}
 		return result;
 	}
