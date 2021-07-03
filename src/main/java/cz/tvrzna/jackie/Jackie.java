@@ -4,8 +4,6 @@ package cz.tvrzna.jackie;
  * Main <code>Jackie</code> class, that provides converting of objects to JSON
  * as <code>String</code> and JSON <code>String</code> to objects.
  *
- * TODO: add description how to use
- *
  * @author michalt
  */
 public class Jackie
@@ -35,7 +33,13 @@ public class Jackie
 
 	/**
 	 * Converts single object or array from JSON to instance of
-	 * <code>clazz</code>.
+	 * <code>clazz</code>. <br>
+	 * If <code>clazz</code> is going to be a <code>List</code>, @see
+	 * Jackie#fromJson(String, Class, Class) to define the Type of list. <br>
+	 * If <code>clazz</code> is going to be <code>Map</code>, @see
+	 * Jackie#fromJson(String, Class, Class, Class) to define key and value
+	 * classes, if you want to avoid to be used <code>String</code> and
+	 * <code>Object</code>.
 	 *
 	 * @param <T>
 	 *          the generic type
