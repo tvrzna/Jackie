@@ -4,7 +4,12 @@
 Simple JSON serialization and deserialization from/to object.
 
 ## What is Jackie good for?
-Yet another JSON object serializer/deserializer, that is small and relatively fast (TODO: compare with gson!!!)
+Yet another JSON object serializer/deserializer, that is small and relatively fast.
+
+|   | **Simple array from JSON** | **Complex object from JSON** | **Simple array to JSON** | **Complex object to JSON** |
+--- | --- | --- | --- | ---
+| **Jackie** | 3ms | 19ms | 2ms | 3ms |
+| **Gson** | 59ms | 66ms | 60ms | 60ms |
 
 ## Installation
 ```xml
