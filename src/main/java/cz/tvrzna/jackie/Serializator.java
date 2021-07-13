@@ -38,7 +38,7 @@ public class Serializator
 		}
 		else if (object instanceof Map)
 		{
-			return serializeMap((Map<String, Object>) object);
+			return serializeMap((Map<Object, Object>) object);
 		}
 		else if (object.getClass().isArray())
 		{
@@ -92,16 +92,19 @@ public class Serializator
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeMap(Map<String, Object> map) throws Exception
+	private static String serializeMap(Map<Object, Object> map) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		List<Entry<String, Object>> list = new ArrayList<>(map.entrySet());
+		List<Entry<Object, Object>> list = new ArrayList<>(map.entrySet());
 		for (int i = 0; i < list.size(); i++)
 		{
-			Entry<String, Object> entry = list.get(i);
+			Entry<Object, Object> entry = list.get(i);
 
-			sb.append(getSeparator()).append(entry.getKey()).append(getSeparator());
+			String key = serializeValue(entry.getKey());
+			boolean requireSeparator = !key.startsWith(getSeparator()) || !key.endsWith(getSeparator());
+
+			sb.append(requireSeparator ? getSeparator() : "").append(key).append(requireSeparator ? getSeparator() : "");
 			sb.append(":");
 			sb.append(serialize(entry.getValue()));
 			if (i < list.size() - 1)
