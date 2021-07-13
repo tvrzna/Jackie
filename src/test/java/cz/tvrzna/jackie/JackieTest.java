@@ -115,4 +115,22 @@ public class JackieTest
 		Assertions.assertEquals(expected, new Jackie().toJson(obj));
 	}
 
+	@Test
+	public void toJsonFromMapWithIntegerKeys() {
+		String expected = "{\"child2\":{\"false\":\"nay\",\"true\":\"yay\"},\"child1\":{\"0\":\"hello\",\"1\":\"cya\"}}";
+
+		Map<String, Object> parent = new HashMap<>();
+		Map<Integer, String> child1 = new HashMap<>();
+		child1.put(0, "hello");
+		child1.put(1, "cya");
+		parent.put("child1", child1);
+
+		Map<Boolean, String> child2 = new HashMap<>();
+		child2.put(Boolean.FALSE, "nay");
+		child2.put(Boolean.TRUE, "yay");
+		parent.put("child2", child2);
+
+		Assertions.assertEquals(expected, new Jackie().toJson(parent));
+	}
+
 }
