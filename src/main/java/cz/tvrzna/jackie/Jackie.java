@@ -1,6 +1,8 @@
 package cz.tvrzna.jackie;
 
 import java.text.DateFormat;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Main <code>Jackie</code> class, that provides converting of objects to JSON
@@ -109,6 +111,48 @@ public class Jackie
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Converts List&lt;clazz&gt; from JSON.
+	 *
+	 * @param <T>
+	 *          the generic type
+	 * @param json
+	 *          the json
+	 * @param clazz
+	 *          the clazz
+	 * @param subClazz
+	 *          the sub clazz
+	 * @return the list
+	 * @since 0.3.0
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> List<T> fromJsonList(String json, Class<T> clazz)
+	{
+		return fromJson(json, List.class, clazz);
+	}
+
+	/**
+	 * Converts Map&lt;keyClazz, valueClazz&gt; from JSON.
+	 *
+	 * @param <T>
+	 *          the generic type
+	 * @param <U>
+	 *          the generic type
+	 * @param json
+	 *          the json
+	 * @param keyClazz
+	 *          the key clazz
+	 * @param valueClazz
+	 *          the value clazz
+	 * @return the map
+	 * @since 0.3.0
+	 */
+	@SuppressWarnings("unchecked")
+	public <T, U> Map<T, U> fromJsonMap(String json, Class<T> keyClazz, Class<U> valueClazz)
+	{
+		return fromJson(json, Map.class, keyClazz, valueClazz);
 	}
 
 	/**

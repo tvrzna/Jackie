@@ -11,6 +11,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import cz.tvrzna.jackie.JackieBuilder.JackieElement;
+
 public class JackieTest
 {
 
@@ -50,10 +52,19 @@ public class JackieTest
 	}
 
 	@Test
+	public void fromJsonToBoolList()
+	{
+		String json = "[true, false]";
+		List<Boolean> lst = new Jackie().fromJsonList(json, boolean.class);
+		Assertions.assertNotNull(lst);
+		Assertions.assertEquals(2, lst.size());
+	}
+
+	@Test
 	public void fromJsonToHashMap()
 	{
 		String json = "{0: \"hello\", 1: \"bye\"}";
-		Map<Integer, String> map = new Jackie().fromJson(json, Map.class, Integer.class, String.class);
+		Map<Integer, String> map = new Jackie().fromJsonMap(json, Integer.class, String.class);
 		Assertions.assertEquals(2, map.size());
 		Assertions.assertEquals("bye", map.get(1));
 	}
@@ -196,9 +207,10 @@ public class JackieTest
 
 		Jackie j = new Jackie().withPrettyPrint();
 		String source = "{\"glossary\":{\"title\":\"example glossary\",\"GlossDiv\":{\"title\":\"S\",\"GlossList\":{\"GlossEntry\":{\"ID\":\"SGML\",\"SortAs\":\"SGML\",\"GlossTerm\":\"Standard Generalized Markup Language\",\"Acronym\":\"SGML\",\"Abbrev\":\"ISO 8879:1986\",\"GlossDef\":{\"para\":\"A meta-markup language, used to create markup languages such as DocBook.\",\"GlossSeeAlso\":[\"GML\",\"XML\", {\"hello\": \"there\"]},\"GlossSee\":\"markup\"}}}}}";
-		Map<String, Object> map = j.fromJson(source, Map.class, String.class, Object.class);
+		Map<String, Object> map = j.fromJsonMap(source, String.class, Object.class);
+		JackieElement el = JackieBuilder.fromString(source);
 
-		String result = j.toJson(map);
+		String result = j.toJson(el);
 //		Assertions.assertEquals(expected, result);
 	}
 
