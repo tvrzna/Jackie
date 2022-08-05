@@ -72,11 +72,11 @@ public class JackieTest
 	@Test
 	public void fromJsonToObject()
 	{
-		String json = "{id: 20200327, 'name': \"SomeDopeName\", 'children': [{id: 1, name: 'help1', children: [{}]}, {id: 2, name: 'help2'}, {id: 3}], 'mapChildren': {'abc': {id: 4, name: 'help4', children: [{id: 5}]}, 'xyz': {id: 6}}}";
+		String json = "{id: 20200327, 'name': \"SomeDope\\n\\nName\", 'children': [{id: 1, name: 'help1', children: [{}]}, {id: 2, name: 'help2'}, {id: 3}], 'mapChildren': {'abc': {id: 4, name: 'help4', children: [{id: 5}]}, 'xyz': {id: 6}}}";
 		TestClass obj = new Jackie().fromJson(json, TestClass.class);
 		Assertions.assertNotNull(obj);
 		Assertions.assertEquals(20200327l, obj.id);
-		Assertions.assertEquals("SomeDopeName", obj.name);
+		Assertions.assertEquals("SomeDope\n\nName", obj.name);
 		Assertions.assertEquals(3, obj.children.size());
 		Assertions.assertNotNull(obj.children.get(2));
 		Assertions.assertEquals(6, obj.mapChildren.get("xyz").id);
@@ -113,10 +113,10 @@ public class JackieTest
 	@Test
 	public void toJsonFromObject()
 	{
-		String expected = "{\"id\":20200327,\"name\":\"SomeDopeName\",\"children\":[{\"id\":1,\"name\":\"children\"}],\"mapChildren\":{\"first\":{\"id\":0},\"second\":{\"id\":2,\"name\":\"children-name\"}}}";
+		String expected = "{\"id\":20200327,\"name\":\"SomeDope\\n\\nName\",\"children\":[{\"id\":1,\"name\":\"children\"}],\"mapChildren\":{\"first\":{\"id\":0},\"second\":{\"id\":2,\"name\":\"children-name\"}}}";
 		TestClass obj = new TestClass();
 		obj.id = 20200327l;
-		obj.name = "SomeDopeName";
+		obj.name = "SomeDope\n\nName";
 		obj.children = new ArrayList<>();
 		obj.children.add(new TestClass());
 		obj.children.get(0).id = 1l;

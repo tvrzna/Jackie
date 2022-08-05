@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cz.tvrzna.jackie.CommonUtils.ESCAPE_CHARACTERS;
+
 /**
  * The Class Deserializator.
  *
@@ -193,7 +195,19 @@ public class Deserializator
 			}
 			else
 			{
-				sw.write(c);
+				if (previousWasEscape && c != '"' && c != '\'')
+				{
+					String character = "\\" + Character.toString((char) c);
+					for (ESCAPE_CHARACTERS escape : ESCAPE_CHARACTERS.values())
+					{
+						character = character.replace(escape.getValue(), escape.getCharacter());
+					}
+					sw.write(character);
+				}
+				else
+				{
+					sw.write(c);
+				}
 				previousWasEscape = false;
 			}
 		}

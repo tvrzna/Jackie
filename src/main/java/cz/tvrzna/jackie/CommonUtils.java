@@ -15,6 +15,40 @@ public class CommonUtils
 			Number.class, Float.class, Double.class, Date.class, boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, double.class);
 	protected static final List<Class<?>> PRIMITIVE_CLASSES = Arrays.asList(boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, double.class);
 
+
+	/**
+	 * The Enum ESCAPE_CHARACTERS.
+	 *
+	 * @author michalt
+	 * @since 0.3.1
+	 */
+	protected enum ESCAPE_CHARACTERS {
+		TAB("\\t", "\t"),
+		CARRIAGE_RETURN("\\r", "\r"),
+		NEW_LINE("\\n", "\n"),
+		FORM_FEED("\\f", "\f"),
+		BACKSPACE("\\b", "\b");
+
+		private final String value;
+		private final String character;
+
+		private ESCAPE_CHARACTERS(String value, String character)
+		{
+			this.value = value;
+			this.character = character;
+		}
+
+		public String getValue()
+		{
+			return value;
+		}
+
+		public String getCharacter()
+		{
+			return character;
+		}
+	}
+
 	private CommonUtils()
 	{
 	}

@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import cz.tvrzna.jackie.CommonUtils.ESCAPE_CHARACTERS;
+
 /**
  * The Class Serializator.
  *
@@ -76,7 +78,12 @@ public class Serializator
 		}
 		else if (value instanceof String)
 		{
-			return getSeparator().concat(((String) value).replace(getSeparator(), "\\".concat(getSeparator()))).concat(getSeparator());
+			String data = getSeparator().concat(((String) value).replace(getSeparator(), "\\".concat(getSeparator()))).concat(getSeparator());
+			for (ESCAPE_CHARACTERS escape : ESCAPE_CHARACTERS.values())
+			{
+				data = data.replace(escape.getCharacter(), escape.getValue());
+			}
+			return data;
 		}
 		else if (value instanceof Number)
 		{
