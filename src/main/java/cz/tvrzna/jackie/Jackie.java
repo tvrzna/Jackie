@@ -122,8 +122,6 @@ public class Jackie
 	 *          the json
 	 * @param clazz
 	 *          the clazz
-	 * @param subClazz
-	 *          the sub clazz
 	 * @return the list
 	 * @since 0.3.0
 	 */
@@ -184,6 +182,8 @@ public class Jackie
 	/**
 	 * Printing to JSON with or without pretty print.
 	 *
+	 * @param prettyPrint
+	 *          the pretty print
 	 * @return the jackie
 	 * @since 0.3.0
 	 */
