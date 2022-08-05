@@ -27,7 +27,7 @@ public class Jackie
 		try
 		{
 			Object o = SerializationMapper.convertFromObject(object, config);
-			return Serializator.serialize(o, config);
+			return Serializator.serialize(o, config, 0);
 		}
 		catch (Exception e)
 		{
@@ -123,6 +123,29 @@ public class Jackie
 	public Jackie withCustomDateFormat(DateFormat customDateFormat)
 	{
 		config.setDateFormat(customDateFormat);
+		return this;
+	}
+
+	/**
+	 * Printing to JSON with pretty print.
+	 *
+	 * @return the jackie
+	 * @since 0.3.0
+	 */
+	public Jackie withPrettyPrint()
+	{
+		return withPrettyPrint(true);
+	}
+
+	/**
+	 * Printing to JSON with or without pretty print.
+	 *
+	 * @return the jackie
+	 * @since 0.3.0
+	 */
+	public Jackie withPrettyPrint(boolean prettyPrint)
+	{
+		config.setPrettyPrint(prettyPrint);
 		return this;
 	}
 

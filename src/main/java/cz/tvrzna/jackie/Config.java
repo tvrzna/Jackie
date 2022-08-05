@@ -10,6 +10,7 @@ import java.text.DateFormat;
 public class Config
 {
 	private DateFormat dateFormat;
+	private boolean prettyPrint = false;
 
 	/**
 	 * Gets the date format.
@@ -33,4 +34,28 @@ public class Config
 	{
 		this.dateFormat = dateFormat;
 	}
+
+	/**
+	 * Checks if is pretty print.
+	 *
+	 * @return true, if is pretty print
+	 * @since 0.3.0
+	 */
+	public boolean isPrettyPrint()
+	{
+		return prettyPrint;
+	}
+
+	/**
+	 * Sets the pretty print.
+	 *
+	 * @param prettyPrint
+	 *          the new pretty print
+	 * @since 0.3.0
+	 */
+	public void setPrettyPrint(boolean prettyPrint)
+	{
+		this.prettyPrint = prettyPrint;
+	}
+
 }

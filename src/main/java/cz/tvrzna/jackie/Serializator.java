@@ -17,6 +17,9 @@ import java.util.Optional;
 public class Serializator
 {
 
+	private static final String LINE_SYMBOL = "\r\n";
+	private static final String INDENT_SYMBOL = "\t";
+
 	private Serializator()
 	{
 	}
@@ -28,24 +31,26 @@ public class Serializator
 	 *          the object
 	 * @param config
 	 *          the config
+	 * @param indent
+	 *          the indent
 	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
 	@SuppressWarnings("unchecked")
-	protected static String serialize(Object object, Config config) throws Exception
+	protected static String serialize(Object object, Config config, int indent) throws Exception
 	{
 		if (object instanceof List)
 		{
-			return serializeList((List<Object>) object, config);
+			return serializeList((List<Object>) object, config, indent);
 		}
 		else if (object instanceof Map)
 		{
-			return serializeMap((Map<Object, Object>) object, config);
+			return serializeMap((Map<Object, Object>) object, config, indent);
 		}
 		else if (object.getClass().isArray())
 		{
-			return serializeArray((Object[]) object, config);
+			return serializeArray((Object[]) object, config, indent);
 		}
 		else
 		{
@@ -96,14 +101,21 @@ public class Serializator
 	 *          the map
 	 * @param config
 	 *          the config
+	 * @param indent
+	 *          the indent
 	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeMap(Map<Object, Object> map, Config config) throws Exception
+	private static String serializeMap(Map<Object, Object> map, Config config, int indent) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
+		if (config.isPrettyPrint())
+		{
+			sb.append(LINE_SYMBOL);
+		}
+		indent++;
 		List<Entry<Object, Object>> list = new ArrayList<>(map.entrySet());
 		for (int i = 0; i < list.size(); i++)
 		{
@@ -111,13 +123,36 @@ public class Serializator
 
 			String key = serializeValue(entry.getKey(), config);
 			boolean requireSeparator = !key.startsWith(getSeparator()) || !key.endsWith(getSeparator());
-
+			if (config.isPrettyPrint())
+			{
+				for (int j = 0; j < indent; j++)
+				{
+					sb.append(INDENT_SYMBOL);
+				}
+			}
 			sb.append(requireSeparator ? getSeparator() : "").append(key).append(requireSeparator ? getSeparator() : "");
 			sb.append(":");
-			sb.append(serialize(entry.getValue(), config));
+			if (config.isPrettyPrint())
+			{
+				sb.append(" ");
+			}
+			sb.append(serialize(entry.getValue(), config, indent));
 			if (i < list.size() - 1)
 			{
 				sb.append(",");
+				if (config.isPrettyPrint())
+				{
+					sb.append(LINE_SYMBOL);
+				}
+			}
+		}
+		indent--;
+		if (config.isPrettyPrint())
+		{
+			sb.append(LINE_SYMBOL);
+			for (int j = 0; j < indent; j++)
+			{
+				sb.append(INDENT_SYMBOL);
 			}
 		}
 		sb.append("}");
@@ -131,20 +166,48 @@ public class Serializator
 	 *          the list
 	 * @param config
 	 *          the config
+	 * @param indent
+	 *          the indent
 	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeList(List<Object> list, Config config) throws Exception
+	private static String serializeList(List<Object> list, Config config, int indent) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
+		indent++;
+		if (config.isPrettyPrint())
+		{
+			sb.append(LINE_SYMBOL);
+			for (int j = 0; j < indent; j++)
+			{
+				sb.append(INDENT_SYMBOL);
+			}
+		}
 		for (int i = 0; i < list.size(); i++)
 		{
-			sb.append(serialize(list.get(i), config));
+			sb.append(serialize(list.get(i), config, indent));
 			if (i < list.size() - 1)
 			{
 				sb.append(",");
+				if (config.isPrettyPrint())
+				{
+					sb.append(LINE_SYMBOL);
+					for (int j = 0; j < indent; j++)
+					{
+						sb.append(INDENT_SYMBOL);
+					}
+				}
+			}
+		}
+		indent--;
+		if (config.isPrettyPrint())
+		{
+			sb.append(LINE_SYMBOL);
+			for (int j = 0; j < indent; j++)
+			{
+				sb.append(INDENT_SYMBOL);
 			}
 		}
 		sb.append("]");
@@ -158,20 +221,48 @@ public class Serializator
 	 *          the list
 	 * @param config
 	 *          the config
+	 * @param indent
+	 *          the indent
 	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeArray(Object[] arr, Config config) throws Exception
+	private static String serializeArray(Object[] arr, Config config, int indent) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
+		indent++;
+		if (config.isPrettyPrint())
+		{
+			sb.append(LINE_SYMBOL);
+			for (int j = 0; j < indent; j++)
+			{
+				sb.append(INDENT_SYMBOL);
+			}
+		}
 		for (int i = 0; i < arr.length; i++)
 		{
-			sb.append(serialize(arr[i], config));
+			sb.append(serialize(arr[i], config, indent));
 			if (i < arr.length - 1)
 			{
 				sb.append(",");
+				if (config.isPrettyPrint())
+				{
+					sb.append(LINE_SYMBOL);
+					for (int j = 0; j < indent; j++)
+					{
+						sb.append(INDENT_SYMBOL);
+					}
+				}
+			}
+		}
+		indent--;
+		if (config.isPrettyPrint())
+		{
+			sb.append(LINE_SYMBOL);
+			for (int j = 0; j < indent; j++)
+			{
+				sb.append(INDENT_SYMBOL);
 			}
 		}
 		sb.append("]");
