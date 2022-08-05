@@ -41,12 +41,14 @@ public class DeserializationMapper
 	 *          the sub clazz
 	 * @param subClazz2
 	 *          the sub clazz 2
+	 * @param config
+	 *          the config
 	 * @return the t
 	 * @throws Exception
 	 *           the exception
 	 */
 	@SuppressWarnings("unchecked")
-	protected static <T> T convertToObject(Object object, Class<T> clazz, Field field, Class<?> subClazz, Class<?> subClazz2) throws Exception
+	protected static <T> T convertToObject(Object object, Class<T> clazz, Field field, Class<?> subClazz, Class<?> subClazz2, Config config) throws Exception
 	{
 		Class<T> tmpClazz = clazz;
 		if (Object.class.equals(tmpClazz) && object != null && object.getClass() != null)
@@ -56,7 +58,7 @@ public class DeserializationMapper
 
 		if ((CommonUtils.SIMPLE_CLASSES.contains(tmpClazz) || Enum.class.isAssignableFrom(tmpClazz)) && !tmpClazz.isArray())
 		{
-			return (T) deserializeValue((String) object, tmpClazz);
+			return (T) deserializeValue((String) object, tmpClazz, config);
 		}
 		else if (Collection.class.isAssignableFrom(tmpClazz))
 		{
@@ -73,12 +75,12 @@ public class DeserializationMapper
 			{
 				lstSubClazz = Object.class;
 			}
-			return (T) convertFromList((List<Object>) object, lstSubClazz);
+			return (T) convertFromList((List<Object>) object, lstSubClazz, config);
 		}
 		else if (tmpClazz.isArray())
 		{
 			Class<?> arrSubClazz = tmpClazz.getComponentType();
-			List<?> list = convertFromList((List<Object>) object, arrSubClazz);
+			List<?> list = convertFromList((List<Object>) object, arrSubClazz, config);
 			if (CommonUtils.PRIMITIVE_CLASSES.contains(arrSubClazz))
 			{
 				return CommonUtils.convertArrayToPrimitive(list, arrSubClazz);
@@ -104,9 +106,9 @@ public class DeserializationMapper
 				keyClazz = Object.class;
 				valueClazz = Object.class;
 			}
-			return (T) convertFromMap((Map<String, Object>) object, keyClazz, valueClazz);
+			return (T) convertFromMap((Map<String, Object>) object, keyClazz, valueClazz, config);
 		}
-		return convertFromMapToObject((Map<String, Object>) object, tmpClazz);
+		return convertFromMapToObject((Map<String, Object>) object, tmpClazz, config);
 	}
 
 	/**
@@ -116,13 +118,15 @@ public class DeserializationMapper
 	 *          the value
 	 * @param clazz
 	 *          the clazz
+	 * @param config
+	 *          the config
 	 * @return the object
 	 * @throws ParseException
 	 *           the parse exception
 	 */
 	@SuppressWarnings(
 	{ "unchecked", "rawtypes" })
-	private static Object deserializeValue(String value, Class<?> clazz) throws ParseException
+	private static Object deserializeValue(String value, Class<?> clazz, Config config) throws ParseException
 	{
 		if ("null".equals(value))
 		{
@@ -173,13 +177,15 @@ public class DeserializationMapper
 	 *          the object
 	 * @param clazz
 	 *          the clazz
+	 * @param config
+	 *          the config
 	 * @return the t
 	 * @throws Exception
 	 *           the exception
 	 */
-	protected static <T> T convertToObject(Object object, Class<T> clazz) throws Exception
+	protected static <T> T convertToObject(Object object, Class<T> clazz, Config config) throws Exception
 	{
-		return convertToObject(object, clazz, null, null, null);
+		return convertToObject(object, clazz, null, null, null, config);
 	}
 
 	/**
@@ -193,13 +199,15 @@ public class DeserializationMapper
 	 *          the clazz
 	 * @param subClazz
 	 *          the sub clazz
+	 * @param config
+	 *          the config
 	 * @return the t
 	 * @throws Exception
 	 *           the exception
 	 */
-	protected static <T> T convertToObject(Object object, Class<T> clazz, Class<?> subClazz) throws Exception
+	protected static <T> T convertToObject(Object object, Class<T> clazz, Class<?> subClazz, Config config) throws Exception
 	{
-		return convertToObject(object, clazz, null, subClazz, null);
+		return convertToObject(object, clazz, null, subClazz, null, config);
 	}
 
 	/**
@@ -234,17 +242,19 @@ public class DeserializationMapper
 	 *          the map
 	 * @param clazz
 	 *          the clazz
+	 * @param config
+	 *          the config
 	 * @return the t
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static <T> T convertFromMapToObject(Map<String, Object> map, Class<T> clazz) throws Exception
+	private static <T> T convertFromMapToObject(Map<String, Object> map, Class<T> clazz, Config config) throws Exception
 	{
 		T result = clazz.newInstance();
 
 		for (Field field : CommonUtils.getFields(clazz))
 		{
-			fillField(result, map, field);
+			fillField(result, map, field, config);
 		}
 
 		return result;
@@ -263,17 +273,19 @@ public class DeserializationMapper
 	 *          the key clazz
 	 * @param valueClazz
 	 *          the value clazz
+	 * @param config
+	 *          the config
 	 * @return the map
 	 * @throws Exception
 	 *           the exception
 	 */
 	@SuppressWarnings("unchecked")
-	private static <K, V> Map<K, V> convertFromMap(Map<String, Object> map, Class<K> keyClazz, Class<V> valueClazz) throws Exception
+	private static <K, V> Map<K, V> convertFromMap(Map<String, Object> map, Class<K> keyClazz, Class<V> valueClazz, Config config) throws Exception
 	{
 		Map<K, V> result = new HashMap<>();
 		for (Entry<String, Object> entry : map.entrySet())
 		{
-			result.put((K) deserializeValue(entry.getKey(), keyClazz), convertToObject(entry.getValue(), valueClazz));
+			result.put((K) deserializeValue(entry.getKey(), keyClazz, config), convertToObject(entry.getValue(), valueClazz, config));
 		}
 		return result;
 	}
@@ -287,16 +299,18 @@ public class DeserializationMapper
 	 *          the lst
 	 * @param clazz
 	 *          the clazz
+	 * @param config
+	 *          the config
 	 * @return the list
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static <T> List<T> convertFromList(List<Object> lst, Class<T> clazz) throws Exception
+	private static <T> List<T> convertFromList(List<Object> lst, Class<T> clazz, Config config) throws Exception
 	{
 		List<T> result = new ArrayList<>();
 		for (Object object : lst)
 		{
-			result.add(convertToObject(object, clazz));
+			result.add(convertToObject(object, clazz, config));
 		}
 		return result;
 	}
@@ -312,10 +326,12 @@ public class DeserializationMapper
 	 *          the map
 	 * @param field
 	 *          the field
+	 * @param config
+	 *          the config
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static <T> void fillField(T result, Map<String, Object> map, Field field) throws Exception
+	private static <T> void fillField(T result, Map<String, Object> map, Field field, Config config) throws Exception
 	{
 		field.setAccessible(true);
 		Object value = map.get(field.getName());
@@ -325,6 +341,6 @@ public class DeserializationMapper
 		{
 			return;
 		}
-		field.set(result, convertToObject(value, clazz, field, null, null));
+		field.set(result, convertToObject(value, clazz, field, null, null, config));
 	}
 }

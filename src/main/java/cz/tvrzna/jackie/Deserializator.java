@@ -23,11 +23,13 @@ public class Deserializator
 	 *
 	 * @param input
 	 *          the input
+	 * @param config
+	 *          the config
 	 * @return the object
 	 * @throws Exception
 	 *           the exception
 	 */
-	protected static Object deserialize(String input) throws Exception
+	protected static Object deserialize(String input, Config config) throws Exception
 	{
 		StringReader reader = new StringReader(input.trim());
 
@@ -36,15 +38,15 @@ public class Deserializator
 		{
 			if (c == '{')
 			{
-				return deserializeToMap(reader);
+				return deserializeToMap(reader, config);
 			}
 			else if (c == '[')
 			{
-				return deserializeToList(reader);
+				return deserializeToList(reader, config);
 			}
 			else
 			{
-				return sanitize(input);
+				return sanitize(input, config);
 			}
 		}
 
@@ -56,11 +58,13 @@ public class Deserializator
 	 *
 	 * @param input
 	 *          the input
+	 * @param config
+	 *          the config
 	 * @return the map
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static Map<String, Object> deserializeToMap(StringReader input) throws Exception
+	private static Map<String, Object> deserializeToMap(StringReader input, Config config) throws Exception
 	{
 		Map<String, Object> result = new HashMap<>();
 
@@ -74,7 +78,7 @@ public class Deserializator
 			}
 			else if (c == ':')
 			{
-				result.put(sanitize(sw.toString()), deserializeValue(input));
+				result.put(sanitize(sw.toString(), config), deserializeValue(input, config));
 				sw = new StringWriter();
 			}
 			else if (c != ',')
@@ -91,11 +95,13 @@ public class Deserializator
 	 *
 	 * @param input
 	 *          the input
+	 * @param config
+	 *          the config
 	 * @return the list
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static List<Object> deserializeToList(StringReader input) throws Exception
+	private static List<Object> deserializeToList(StringReader input, Config config) throws Exception
 	{
 		List<Object> result = new ArrayList<>();
 
@@ -105,7 +111,7 @@ public class Deserializator
 		{
 			if (c == ']' || c == ',')
 			{
-				Object o = deserialize(sw.toString());
+				Object o = deserialize(sw.toString(), config);
 				if (o != null)
 				{
 					result.add(o);
@@ -118,12 +124,12 @@ public class Deserializator
 			}
 			else if (c == '[')
 			{
-				result.add(deserializeToList(input));
+				result.add(deserializeToList(input, config));
 				sw = new StringWriter();
 			}
 			else if (c == '{')
 			{
-				result.add(deserializeToMap(input));
+				result.add(deserializeToMap(input, config));
 				sw = new StringWriter();
 			}
 			else
@@ -140,11 +146,13 @@ public class Deserializator
 	 *
 	 * @param input
 	 *          the input
+	 * @param config
+	 *          the config
 	 * @return the object
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static Object deserializeValue(StringReader input) throws Exception
+	private static Object deserializeValue(StringReader input, Config config) throws Exception
 	{
 		StringWriter sw = new StringWriter();
 		Integer delimiter = null;
@@ -155,11 +163,11 @@ public class Deserializator
 		{
 			if (c == '{' && !isInQuotes)
 			{
-				return deserializeToMap(input);
+				return deserializeToMap(input, config);
 			}
 			else if (c == '[' && !isInQuotes)
 			{
-				return deserializeToList(input);
+				return deserializeToList(input, config);
 			}
 			else if ((delimiter != null && c == delimiter && !previousWasEscape) || (delimiter == null && c == ','))
 			{
@@ -189,7 +197,7 @@ public class Deserializator
 				previousWasEscape = false;
 			}
 		}
-		return sanitize(sw.toString());
+		return sanitize(sw.toString(), config);
 	}
 
 	/**
@@ -197,9 +205,11 @@ public class Deserializator
 	 *
 	 * @param value
 	 *          the value
+	 * @param config
+	 *          the config
 	 * @return the string
 	 */
-	private static String sanitize(String value)
+	private static String sanitize(String value, Config config)
 	{
 		return value.trim().replaceAll("(^['\"]|['\"]$)", "").trim();
 	}

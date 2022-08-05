@@ -25,28 +25,30 @@ public class Serializator
 	 *
 	 * @param object
 	 *          the object
+	 * @param config
+	 *          the config
 	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
 	@SuppressWarnings("unchecked")
-	protected static String serialize(Object object) throws Exception
+	protected static String serialize(Object object, Config config) throws Exception
 	{
 		if (object instanceof List)
 		{
-			return serializeList((List<Object>) object);
+			return serializeList((List<Object>) object, config);
 		}
 		else if (object instanceof Map)
 		{
-			return serializeMap((Map<Object, Object>) object);
+			return serializeMap((Map<Object, Object>) object, config);
 		}
 		else if (object.getClass().isArray())
 		{
-			return serializeArray((Object[]) object);
+			return serializeArray((Object[]) object, config);
 		}
 		else
 		{
-			return serializeValue(object);
+			return serializeValue(object, config);
 		}
 	}
 
@@ -55,9 +57,12 @@ public class Serializator
 	 *
 	 * @param value
 	 *          the value
+	 *
+	 * @param config
+	 *          the config
 	 * @return the string
 	 */
-	private static String serializeValue(Object value)
+	private static String serializeValue(Object value, Config config)
 	{
 		if (value == null)
 		{
@@ -88,11 +93,13 @@ public class Serializator
 	 *
 	 * @param map
 	 *          the map
+	 * @param config
+	 *          the config
 	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeMap(Map<Object, Object> map) throws Exception
+	private static String serializeMap(Map<Object, Object> map, Config config) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
@@ -101,12 +108,12 @@ public class Serializator
 		{
 			Entry<Object, Object> entry = list.get(i);
 
-			String key = serializeValue(entry.getKey());
+			String key = serializeValue(entry.getKey(), config);
 			boolean requireSeparator = !key.startsWith(getSeparator()) || !key.endsWith(getSeparator());
 
 			sb.append(requireSeparator ? getSeparator() : "").append(key).append(requireSeparator ? getSeparator() : "");
 			sb.append(":");
-			sb.append(serialize(entry.getValue()));
+			sb.append(serialize(entry.getValue(), config));
 			if (i < list.size() - 1)
 			{
 				sb.append(",");
@@ -121,17 +128,19 @@ public class Serializator
 	 *
 	 * @param list
 	 *          the list
+	 * @param config
+	 *          the config
 	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeList(List<Object> list) throws Exception
+	private static String serializeList(List<Object> list, Config config) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		for (int i = 0; i < list.size(); i++)
 		{
-			sb.append(serialize(list.get(i)));
+			sb.append(serialize(list.get(i), config));
 			if (i < list.size() - 1)
 			{
 				sb.append(",");
@@ -146,17 +155,19 @@ public class Serializator
 	 *
 	 * @param arr
 	 *          the list
+	 * @param config
+	 *          the config
 	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeArray(Object[] arr) throws Exception
+	private static String serializeArray(Object[] arr, Config config) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		for (int i = 0; i < arr.length; i++)
 		{
-			sb.append(serialize(arr[i]));
+			sb.append(serialize(arr[i], config));
 			if (i < arr.length - 1)
 			{
 				sb.append(",");

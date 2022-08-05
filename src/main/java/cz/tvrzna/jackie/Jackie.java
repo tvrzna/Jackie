@@ -9,6 +9,8 @@ package cz.tvrzna.jackie;
 public class Jackie
 {
 
+	private Config config = new Config();
+
 	/**
 	 * Converts single object into JSON as <code>String</code>.
 	 *
@@ -22,8 +24,8 @@ public class Jackie
 	{
 		try
 		{
-			Object o = SerializationMapper.convertFromObject(object);
-			return Serializator.serialize(o);
+			Object o = SerializationMapper.convertFromObject(object, config);
+			return Serializator.serialize(o, config);
 		}
 		catch (Exception e)
 		{
@@ -98,8 +100,8 @@ public class Jackie
 		}
 		try
 		{
-			Object o = Deserializator.deserialize(json);
-			return DeserializationMapper.convertToObject(o, clazz, null, keyClazz, valueClazz);
+			Object o = Deserializator.deserialize(json, config);
+			return DeserializationMapper.convertToObject(o, clazz, null, keyClazz, valueClazz, config);
 		}
 		catch (Exception e)
 		{
