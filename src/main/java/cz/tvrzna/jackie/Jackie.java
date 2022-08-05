@@ -1,5 +1,7 @@
 package cz.tvrzna.jackie;
 
+import java.text.DateFormat;
+
 /**
  * Main <code>Jackie</code> class, that provides converting of objects to JSON
  * as <code>String</code> and JSON <code>String</code> to objects.
@@ -107,6 +109,21 @@ public class Jackie
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Uses custom date format for each date operation. If default date format
+	 * should be used, just set <code>null</code>.
+	 *
+	 * @param customDateFormat
+	 *          the custom date format
+	 * @return the jackie
+	 * @since 0.3.0
+	 */
+	public Jackie withCustomDateFormat(DateFormat customDateFormat)
+	{
+		config.setDateFormat(customDateFormat);
+		return this;
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 /**
  * The Class Serializator.
@@ -82,7 +83,7 @@ public class Serializator
 		}
 		else if (value instanceof Date)
 		{
-			DateFormat df = new SimpleDateFormat(CommonUtils.DATE_FORMAT_JSON);
+			DateFormat df = Optional.ofNullable(config.getDateFormat()).orElse(new SimpleDateFormat(CommonUtils.DATE_FORMAT_JSON));
 			return getSeparator().concat(df.format(value)).concat(getSeparator());
 		}
 		return getSeparator().concat((value.toString()).replace(getSeparator(), "\\".concat(getSeparator()))).concat(getSeparator());

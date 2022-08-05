@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 /**
  * The Class DeserializationMapper.
@@ -158,7 +159,7 @@ public class DeserializationMapper
 		}
 		else if (Date.class.equals(clazz))
 		{
-			DateFormat df = new SimpleDateFormat(CommonUtils.DATE_FORMAT_JSON);
+			DateFormat df = Optional.ofNullable(config.getDateFormat()).orElse(new SimpleDateFormat(CommonUtils.DATE_FORMAT_JSON));
 			return df.parseObject(value);
 		}
 		else if (Enum.class.isAssignableFrom(clazz))

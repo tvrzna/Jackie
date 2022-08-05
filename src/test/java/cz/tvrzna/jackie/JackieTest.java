@@ -1,6 +1,9 @@
 package cz.tvrzna.jackie;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +119,8 @@ public class JackieTest
 	}
 
 	@Test
-	public void toJsonFromMapWithIntegerKeys() {
+	public void toJsonFromMapWithIntegerKeys()
+	{
 		String expected = "{\"child2\":{\"false\":\"nay\",\"true\":\"yay\"},\"child1\":{\"0\":\"hello\",\"1\":\"cya\"}}";
 
 		Map<String, Object> parent = new HashMap<>();
@@ -131,6 +135,32 @@ public class JackieTest
 		parent.put("child2", child2);
 
 		Assertions.assertEquals(expected, new Jackie().toJson(parent));
+	}
+
+	@Test
+	public void testCustomDateFormat()
+	{
+		final String expected = "{\"today\":\"2022-08-05\"}";
+		Jackie j = new Jackie().withCustomDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, 2022);
+		cal.set(Calendar.MONTH, 7);
+		cal.set(Calendar.DAY_OF_MONTH, 5);
+
+		Map<String, Date> map = new HashMap<>();
+		map.put("today", cal.getTime());
+
+		String json = j.toJson(map);
+		Assertions.assertEquals(expected, json);
+
+		Map<String, Date> resultMap = j.fromJson(json, Map.class, String.class, Date.class);
+		Calendar resultCal = Calendar.getInstance();
+		resultCal.setTime(resultMap.get("today"));
+
+		Assertions.assertEquals(cal.get(Calendar.YEAR), resultCal.get(Calendar.YEAR));
+		Assertions.assertEquals(cal.get(Calendar.MONTH), resultCal.get(Calendar.MONTH));
+		Assertions.assertEquals(cal.get(Calendar.DAY_OF_MONTH), resultCal.get(Calendar.DAY_OF_MONTH));
 	}
 
 }
