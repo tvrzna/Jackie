@@ -189,7 +189,7 @@ public class Deserializator
 				delimiter = c;
 				isInQuotes = true;
 			}
-			else if (delimiter != null && !previousWasEscape && (c == '\'' || c == '"'))
+			else if (delimiter != null && c == delimiter && !previousWasEscape)
 			{
 				isInQuotes = false;
 			}
