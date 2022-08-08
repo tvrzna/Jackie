@@ -1,5 +1,5 @@
 # Jackie
-[![javadoc](https://javadoc.io/badge2/cz.tvrzna/jackie/0.3.1/javadoc.svg)](https://javadoc.io/doc/cz.tvrzna/jackie/0.3.1)
+[![javadoc](https://javadoc.io/badge2/cz.tvrzna/jackie/0.3.2/javadoc.svg)](https://javadoc.io/doc/cz.tvrzna/jackie/0.3.2)
 
 Simple JSON serialization and deserialization from/to object.
 
@@ -16,7 +16,7 @@ Yet another JSON object serializer/deserializer, that is small and relatively fa
 <dependency>
     <groupId>cz.tvrzna</groupId>
     <artifactId>jackie</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 </dependency>
 ```
 
