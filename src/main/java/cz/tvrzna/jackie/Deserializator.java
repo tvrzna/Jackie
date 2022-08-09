@@ -3,7 +3,7 @@ package cz.tvrzna.jackie;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +68,7 @@ public class Deserializator
 	 */
 	private static Map<String, Object> deserializeToMap(StringReader input, Config config) throws Exception
 	{
-		Map<String, Object> result = new HashMap<>();
+		Map<String, Object> result = new LinkedHashMap<>();
 
 		StringWriter sw = new StringWriter();
 		int c;

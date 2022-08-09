@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -288,7 +288,7 @@ public class DeserializationMapper
 	@SuppressWarnings("unchecked")
 	private static <K, V> Map<K, V> convertFromMap(Map<String, Object> map, Class<K> keyClazz, Class<V> valueClazz, Config config) throws Exception
 	{
-		Map<K, V> result = new HashMap<>();
+		Map<K, V> result = new LinkedHashMap<>();
 		for (Entry<String, Object> entry : map.entrySet())
 		{
 			result.put((K) deserializeValue(entry.getKey(), keyClazz, config), convertToObject(entry.getValue(), valueClazz, config));

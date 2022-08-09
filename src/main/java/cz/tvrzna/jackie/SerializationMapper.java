@@ -3,7 +3,6 @@ package cz.tvrzna.jackie;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,7 +148,7 @@ public class SerializationMapper
 	 */
 	private static Map<?, ?> processMap(Object map, Config config) throws Exception
 	{
-		Map<Object, Object> result = new HashMap<>();
+		Map<Object, Object> result = new LinkedHashMap<>();
 		for (Map.Entry<?, ?> entry : ((Map<?, ?>) map).entrySet())
 		{
 			result.put(entry.getKey(), convertFromObject(entry.getValue(), config));
