@@ -115,14 +115,17 @@ public class Serializator
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		if (config.isPrettyPrint())
-		{
-			sb.append(config.getPrettyLineSymbol());
-		}
 		indent++;
 		List<Entry<Object, Object>> list = new ArrayList<>(map.entrySet());
 		for (int i = 0; i < list.size(); i++)
 		{
+			if (i == 0) {
+				if (config.isPrettyPrint())
+				{
+					sb.append(config.getPrettyLineSymbol());
+				}
+			}
+
 			Entry<Object, Object> entry = list.get(i);
 
 			String key = serializeValue(entry.getKey(), config);
@@ -151,8 +154,12 @@ public class Serializator
 				}
 			}
 		}
+		if (config.isPrettyPrint() && list.isEmpty())
+		{
+			sb.append(" ");
+		}
 		indent--;
-		if (config.isPrettyPrint())
+		if (config.isPrettyPrint() && !list.isEmpty())
 		{
 			sb.append(config.getPrettyLineSymbol());
 			for (int j = 0; j < indent; j++)
@@ -181,14 +188,9 @@ public class Serializator
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
-		indent++;
 		if (config.isPrettyPrint())
 		{
-			sb.append(config.getPrettyLineSymbol());
-			for (int j = 0; j < indent; j++)
-			{
-				sb.append(config.getPrettyIndentSymbol());
-			}
+			sb.append(" ");
 		}
 		for (int i = 0; i < list.size(); i++)
 		{
@@ -198,22 +200,13 @@ public class Serializator
 				sb.append(",");
 				if (config.isPrettyPrint())
 				{
-					sb.append(config.getPrettyLineSymbol());
-					for (int j = 0; j < indent; j++)
-					{
-						sb.append(config.getPrettyIndentSymbol());
-					}
+					sb.append(" ");
 				}
 			}
 		}
-		indent--;
 		if (config.isPrettyPrint())
 		{
-			sb.append(config.getPrettyLineSymbol());
-			for (int j = 0; j < indent; j++)
-			{
-				sb.append(config.getPrettyIndentSymbol());
-			}
+			sb.append(" ");
 		}
 		sb.append("]");
 		return sb.toString();
@@ -236,14 +229,9 @@ public class Serializator
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
-		indent++;
 		if (config.isPrettyPrint())
 		{
-			sb.append(config.getPrettyLineSymbol());
-			for (int j = 0; j < indent; j++)
-			{
-				sb.append(config.getPrettyIndentSymbol());
-			}
+			sb.append(" ");
 		}
 		for (int i = 0; i < arr.length; i++)
 		{
@@ -253,22 +241,13 @@ public class Serializator
 				sb.append(",");
 				if (config.isPrettyPrint())
 				{
-					sb.append(config.getPrettyLineSymbol());
-					for (int j = 0; j < indent; j++)
-					{
-						sb.append(config.getPrettyIndentSymbol());
-					}
+					sb.append(" ");
 				}
 			}
 		}
-		indent--;
 		if (config.isPrettyPrint())
 		{
-			sb.append(config.getPrettyLineSymbol());
-			for (int j = 0; j < indent; j++)
-			{
-				sb.append(config.getPrettyIndentSymbol());
-			}
+			sb.append(" ");
 		}
 		sb.append("]");
 		return sb.toString();
