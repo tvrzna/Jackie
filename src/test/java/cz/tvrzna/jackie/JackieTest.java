@@ -1,5 +1,8 @@
 package cz.tvrzna.jackie;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +22,8 @@ public class JackieTest
 	public static class TestClass
 	{
 		protected long id;
+		protected BigDecimal bigDecimal;
+		protected BigInteger bigInteger;
 		protected String name;
 		protected List<TestClass> children;
 		protected Map<String, TestClass> mapChildren;
@@ -113,9 +118,11 @@ public class JackieTest
 	@Test
 	public void toJsonFromObject()
 	{
-		String expected = "{\"id\":20200327,\"name\":\"SomeDope\\n\\nName\",\"children\":[{\"id\":1,\"name\":\"children\"}],\"mapChildren\":{\"first\":{\"id\":0},\"second\":{\"id\":2,\"name\":\"children-name\"}}}";
+		String expected = "{\"id\":20200327,\"bigDecimal\":2.10,\"bigInteger\":500,\"name\":\"SomeDope\\n\\nName\",\"children\":[{\"id\":1,\"name\":\"children\"}],\"mapChildren\":{\"first\":{\"id\":0},\"second\":{\"id\":2,\"name\":\"children-name\"}}}";
 		TestClass obj = new TestClass();
 		obj.id = 20200327l;
+		obj.bigDecimal = new BigDecimal(2.1).setScale(2, RoundingMode.HALF_UP);
+		obj.bigInteger = new BigInteger("500");
 		obj.name = "SomeDope\n\nName";
 		obj.children = new ArrayList<>();
 		obj.children.add(new TestClass());

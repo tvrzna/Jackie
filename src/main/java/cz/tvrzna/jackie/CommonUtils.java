@@ -2,6 +2,8 @@ package cz.tvrzna.jackie;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -12,7 +14,7 @@ public class CommonUtils
 	protected static final String DATE_FORMAT_JSON = "yyyy-MM-dd'T'HH:mm:ss";
 	protected static final String DEFAULT_SEPARATOR = "\"";
 	protected static final List<Class<?>> SIMPLE_CLASSES = Arrays.asList(String.class, Boolean.class, Byte.class, Character.class, Short.class, Integer.class, Long.class,
-			Number.class, Float.class, Double.class, Date.class, boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, double.class);
+			Number.class, Float.class, Double.class, Date.class, BigDecimal.class, BigInteger.class, boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, double.class);
 	protected static final List<Class<?>> PRIMITIVE_CLASSES = Arrays.asList(boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, double.class);
 
 
