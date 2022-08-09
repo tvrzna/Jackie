@@ -95,7 +95,7 @@ public class Config
 	{
 		if (prettyLineSymbol == null)
 		{
-			return "\r\n";
+			return "\n";
 		}
 		return prettyLineSymbol;
 	}

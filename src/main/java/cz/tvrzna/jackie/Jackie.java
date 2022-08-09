@@ -195,7 +195,7 @@ public class Jackie
 
 	/**
 	 * Sets custom symbol for new line. Works only with pretty print. If is set to
-	 * <code>null</code>, it uses default <code>\r\n</code>.
+	 * <code>null</code>, it uses default <code>\n</code>.
 	 *
 	 * @param symbol
 	 * @return the jackie
