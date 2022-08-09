@@ -12,6 +12,8 @@ public class Config
 	private DateFormat dateFormat;
 	private boolean prettyPrint = false;
 	private boolean useObjectWrapper = false;
+	private String prettyLineSymbol = null;
+	private String prettyIndentSymbol = null;
 
 	/**
 	 * Gets the date format.
@@ -63,7 +65,7 @@ public class Config
 	 * Checks if is use object wrapper.
 	 *
 	 * @return true, if is use object wrapper
-	 * @since 0.3.3
+	 * @since 0.4.0
 	 */
 	protected boolean isUseObjectWrapper()
 	{
@@ -76,11 +78,65 @@ public class Config
 	 *
 	 * @param useObjectWrapper
 	 *          the new use object wrapper
-	 * @since 0.3.3
+	 * @since 0.4.0
 	 */
 	protected void setUseObjectWrapper(boolean useObjectWrapper)
 	{
 		this.useObjectWrapper = useObjectWrapper;
+	}
+
+	/**
+	 * Gets the pretty line symbol.
+	 *
+	 * @return the pretty line symbol
+	 * @since 0.4.0
+	 */
+	public String getPrettyLineSymbol()
+	{
+		if (prettyLineSymbol == null)
+		{
+			return "\r\n";
+		}
+		return prettyLineSymbol;
+	}
+
+	/**
+	 * Sets the pretty line symbol.
+	 *
+	 * @param prettyLineSymbol
+	 *          the new pretty line symbol
+	 * @since 0.4.0
+	 */
+	public void setPrettyLineSymbol(String prettyLineSymbol)
+	{
+		this.prettyLineSymbol = prettyLineSymbol;
+	}
+
+	/**
+	 * Gets the pretty indent symbol.
+	 *
+	 * @return the pretty indent symbol
+	 * @since 0.4.0
+	 */
+	public String getPrettyIndentSymbol()
+	{
+		if (prettyIndentSymbol == null)
+		{
+			return "\t";
+		}
+		return prettyIndentSymbol;
+	}
+
+	/**
+	 * Sets the pretty indent symbol.
+	 *
+	 * @param prettyIndentSymbol
+	 *          the new pretty indent symbol
+	 * @since 0.4.0
+	 */
+	public void setPrettyIndentSymbol(String prettyIndentSymbol)
+	{
+		this.prettyIndentSymbol = prettyIndentSymbol;
 	}
 
 }

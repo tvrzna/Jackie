@@ -194,10 +194,38 @@ public class Jackie
 	}
 
 	/**
+	 * Sets custom symbol for new line. Works only with pretty print. If is set to
+	 * <code>null</code>, it uses default <code>\r\n</code>.
+	 *
+	 * @param symbol
+	 * @return the jackie
+	 * @since 0.4.0
+	 */
+	public Jackie withLineIndent(String symbol)
+	{
+		config.setPrettyLineSymbol(symbol);
+		return this;
+	}
+
+	/**
+	 * Sets custom symbol for tab indentation. Works only with pretty print. If is set to
+	 * <code>null</code>, it uses default <code>\t</code>.
+	 *
+	 * @param symbol
+	 * @return the jackie
+	 * @since 0.4.0
+	 */
+	public Jackie withTabIndent(String symbol)
+	{
+		config.setPrettyIndentSymbol(symbol);
+		return this;
+	}
+
+	/**
 	 * Gets the config.
 	 *
 	 * @return the config
-	 * @since 0.3.3
+	 * @since 0.4.0
 	 */
 	protected Config getConfig() {
 		return config;

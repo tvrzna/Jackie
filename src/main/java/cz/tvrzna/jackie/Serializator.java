@@ -19,9 +19,6 @@ import cz.tvrzna.jackie.CommonUtils.ESCAPE_CHARACTERS;
 public class Serializator
 {
 
-	private static final String LINE_SYMBOL = "\r\n";
-	private static final String INDENT_SYMBOL = "\t";
-
 	private Serializator()
 	{
 	}
@@ -120,7 +117,7 @@ public class Serializator
 		sb.append("{");
 		if (config.isPrettyPrint())
 		{
-			sb.append(LINE_SYMBOL);
+			sb.append(config.getPrettyLineSymbol());
 		}
 		indent++;
 		List<Entry<Object, Object>> list = new ArrayList<>(map.entrySet());
@@ -134,7 +131,7 @@ public class Serializator
 			{
 				for (int j = 0; j < indent; j++)
 				{
-					sb.append(INDENT_SYMBOL);
+					sb.append(config.getPrettyIndentSymbol());
 				}
 			}
 			sb.append(requireSeparator ? getSeparator() : "").append(key).append(requireSeparator ? getSeparator() : "");
@@ -149,17 +146,17 @@ public class Serializator
 				sb.append(",");
 				if (config.isPrettyPrint())
 				{
-					sb.append(LINE_SYMBOL);
+					sb.append(config.getPrettyLineSymbol());
 				}
 			}
 		}
 		indent--;
 		if (config.isPrettyPrint())
 		{
-			sb.append(LINE_SYMBOL);
+			sb.append(config.getPrettyLineSymbol());
 			for (int j = 0; j < indent; j++)
 			{
-				sb.append(INDENT_SYMBOL);
+				sb.append(config.getPrettyIndentSymbol());
 			}
 		}
 		sb.append("}");
@@ -186,10 +183,10 @@ public class Serializator
 		indent++;
 		if (config.isPrettyPrint())
 		{
-			sb.append(LINE_SYMBOL);
+			sb.append(config.getPrettyLineSymbol());
 			for (int j = 0; j < indent; j++)
 			{
-				sb.append(INDENT_SYMBOL);
+				sb.append(config.getPrettyIndentSymbol());
 			}
 		}
 		for (int i = 0; i < list.size(); i++)
@@ -200,10 +197,10 @@ public class Serializator
 				sb.append(",");
 				if (config.isPrettyPrint())
 				{
-					sb.append(LINE_SYMBOL);
+					sb.append(config.getPrettyLineSymbol());
 					for (int j = 0; j < indent; j++)
 					{
-						sb.append(INDENT_SYMBOL);
+						sb.append(config.getPrettyIndentSymbol());
 					}
 				}
 			}
@@ -211,10 +208,10 @@ public class Serializator
 		indent--;
 		if (config.isPrettyPrint())
 		{
-			sb.append(LINE_SYMBOL);
+			sb.append(config.getPrettyLineSymbol());
 			for (int j = 0; j < indent; j++)
 			{
-				sb.append(INDENT_SYMBOL);
+				sb.append(config.getPrettyIndentSymbol());
 			}
 		}
 		sb.append("]");
@@ -241,10 +238,10 @@ public class Serializator
 		indent++;
 		if (config.isPrettyPrint())
 		{
-			sb.append(LINE_SYMBOL);
+			sb.append(config.getPrettyLineSymbol());
 			for (int j = 0; j < indent; j++)
 			{
-				sb.append(INDENT_SYMBOL);
+				sb.append(config.getPrettyIndentSymbol());
 			}
 		}
 		for (int i = 0; i < arr.length; i++)
@@ -255,10 +252,10 @@ public class Serializator
 				sb.append(",");
 				if (config.isPrettyPrint())
 				{
-					sb.append(LINE_SYMBOL);
+					sb.append(config.getPrettyLineSymbol());
 					for (int j = 0; j < indent; j++)
 					{
-						sb.append(INDENT_SYMBOL);
+						sb.append(config.getPrettyIndentSymbol());
 					}
 				}
 			}
@@ -266,10 +263,10 @@ public class Serializator
 		indent--;
 		if (config.isPrettyPrint())
 		{
-			sb.append(LINE_SYMBOL);
+			sb.append(config.getPrettyLineSymbol());
 			for (int j = 0; j < indent; j++)
 			{
-				sb.append(INDENT_SYMBOL);
+				sb.append(config.getPrettyIndentSymbol());
 			}
 		}
 		sb.append("]");
