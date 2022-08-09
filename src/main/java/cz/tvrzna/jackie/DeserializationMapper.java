@@ -57,6 +57,11 @@ public class DeserializationMapper
 			tmpClazz = (Class<T>) object.getClass();
 		}
 
+		if (ObjectWrapper.class.isAssignableFrom(object.getClass()))
+		{
+			return (T) ((ObjectWrapper) object).getValue();
+		}
+
 		if ((CommonUtils.SIMPLE_CLASSES.contains(tmpClazz) || Enum.class.isAssignableFrom(tmpClazz)) && !tmpClazz.isArray())
 		{
 			return (T) deserializeValue((String) object, tmpClazz, config);

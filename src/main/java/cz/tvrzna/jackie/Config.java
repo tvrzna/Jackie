@@ -11,6 +11,7 @@ public class Config
 {
 	private DateFormat dateFormat;
 	private boolean prettyPrint = false;
+	private boolean useObjectWrapper = false;
 
 	/**
 	 * Gets the date format.
@@ -56,6 +57,30 @@ public class Config
 	public void setPrettyPrint(boolean prettyPrint)
 	{
 		this.prettyPrint = prettyPrint;
+	}
+
+	/**
+	 * Checks if is use object wrapper.
+	 *
+	 * @return true, if is use object wrapper
+	 * @since 0.3.3
+	 */
+	protected boolean isUseObjectWrapper()
+	{
+		return useObjectWrapper;
+	}
+
+	/**
+	 * Sets the use object wrapper. This has meaning, when
+	 * <code>JackieBuilder</code> is used for prettyprint.
+	 *
+	 * @param useObjectWrapper
+	 *          the new use object wrapper
+	 * @since 0.3.3
+	 */
+	protected void setUseObjectWrapper(boolean useObjectWrapper)
+	{
+		this.useObjectWrapper = useObjectWrapper;
 	}
 
 }

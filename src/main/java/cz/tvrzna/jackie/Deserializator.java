@@ -161,6 +161,7 @@ public class Deserializator
 		int c;
 		boolean previousWasEscape = false;
 		boolean isInQuotes = false;
+		boolean usedQuotes = false;
 		while ((c = input.read()) >= 0)
 		{
 			if (c == '{' && !isInQuotes)
@@ -188,6 +189,7 @@ public class Deserializator
 			{
 				delimiter = c;
 				isInQuotes = true;
+				usedQuotes = true;
 			}
 			else if (delimiter != null && c == delimiter && !previousWasEscape)
 			{
@@ -211,7 +213,42 @@ public class Deserializator
 				previousWasEscape = false;
 			}
 		}
-		return sanitize(sw.toString(), config);
+		String value = sanitize(sw.toString(), config);
+		if (config.isUseObjectWrapper() && !usedQuotes)
+		{
+			if (isNumeric(value))
+			{
+				if (value.contains("."))
+				{
+					return new ObjectWrapper(Double.parseDouble(value), Double.class);
+				}
+				else
+				{
+					return new ObjectWrapper(Long.parseLong(value), Long.class);
+				}
+			}
+			else if ("true".equals(value) || "false".equals(value))
+			{
+				return new ObjectWrapper(Boolean.parseBoolean(value), Boolean.class);
+			}
+		}
+		return value;
+	}
+
+	private static boolean isNumeric(String value)
+	{
+		if (value == null || value.isEmpty())
+		{
+			return false;
+		}
+		for (int i = 0; i < value.length(); i++)
+		{
+			if (!Character.isDigit(value.charAt(i)))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

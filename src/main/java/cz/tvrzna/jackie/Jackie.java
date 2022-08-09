@@ -193,4 +193,14 @@ public class Jackie
 		return this;
 	}
 
+	/**
+	 * Gets the config.
+	 *
+	 * @return the config
+	 * @since 0.3.3
+	 */
+	protected Config getConfig() {
+		return config;
+	}
+
 }

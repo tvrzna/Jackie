@@ -33,6 +33,7 @@ public class JackieBuilder
 	public static JackieElement fromString(String json)
 	{
 		Jackie jackie = new Jackie();
+		jackie.getConfig().setUseObjectWrapper(true);
 		JackieElement result = new JackieElement();
 		result.putAll(jackie.fromJson(json, JackieElement.class));
 		return result;
@@ -43,7 +44,7 @@ public class JackieBuilder
 	 *
 	 * @author michalt
 	 */
-	public static class JackieElement extends HashMap<String, Object>
+	public static class JackieElement extends LinkedHashMap<String, Object>
 	{
 		private static final long serialVersionUID = -790430865279217546L;
 
