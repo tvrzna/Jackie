@@ -135,10 +135,11 @@ public class Serializator
 				}
 			}
 			sb.append(requireSeparator ? getSeparator() : "").append(key).append(requireSeparator ? getSeparator() : "");
-			sb.append(":");
 			if (config.isPrettyPrint())
 			{
-				sb.append(" ");
+				sb.append(" : ");
+			} else {
+				sb.append(":");
 			}
 			sb.append(serialize(entry.getValue(), config, indent));
 			if (i < list.size() - 1)
