@@ -185,29 +185,25 @@ public class JackieTest
 	public void testPrettyPrint()
 	{
 		final String expected = "{\n" +
-				"	\"glossary\": {\n" +
-				"		\"title\": \"example glossary\",\n" +
-				"		\"GlossDiv\": {\n" +
-				"			\"GlossList\": {\n" +
-				"				\"GlossEntry\": {\n" +
-				"					\"GlossTerm\": \"Standard Generalized Markup Language\",\n" +
-				"					\"SortAs\": \"SGML\",\n" +
-				"					\"GlossDef\": {\n" +
-				"						\"para\": \"A meta-markup language, used to create markup languages such as DocBook.\",\n" +
-				"						\"GlossSeeAlso\": [\n" +
-				"							\"GML\",\n" +
-				"							\"XML\",\n" +
-				"							{\n" +
-				"								\"hello\": \"there\"\n" +
-				"							}\n" +
-				"						]\n" +
-				"					},\n" +
-				"					\"ID\": \"SGML\",\n" +
-				"					\"Acronym\": \"SGML\",\n" +
-				"					\"Abbrev\": \"ISO 8879:1986\"\n" +
+				"	\"glossary\" : {\n" +
+				"		\"title\" : \"example glossary\",\n" +
+				"		\"GlossDiv\" : {\n" +
+				"			\"title\" : \"S\",\n" +
+				"			\"GlossList\" : {\n" +
+				"				\"GlossEntry\" : {\n" +
+				"					\"ID\" : \"SGML\",\n" +
+				"					\"SortAs\" : \"SGML\",\n" +
+				"					\"GlossTerm\" : \"Standard Generalized Markup Language\",\n" +
+				"					\"Acronym\" : \"SGML\",\n" +
+				"					\"Abbrev\" : \"ISO 8879:1986\",\n" +
+				"					\"GlossDef\" : {\n" +
+				"						\"para\" : \"A meta-markup language, used to create markup languages such as DocBook.\",\n" +
+				"						\"GlossSeeAlso\" : [ \"GML\", \"XML\", {\n" +
+				"							\"hello\" : \"there\"\n" +
+				"						} ]\n" +
+				"					}\n" +
 				"				}\n" +
-				"			},\n" +
-				"			\"title\": \"S\"\n" +
+				"			}\n" +
 				"		}\n" +
 				"	}\n" +
 				"}";
@@ -227,6 +223,26 @@ public class JackieTest
 
 		JackieElement e = JackieBuilder.fromString(source);
 		Assertions.assertEquals(source, new Jackie().withPrettyPrint().withTabIndent("  ").toJson(e));
+	}
+
+	@Test
+	public void testPrettyPrintCustomIndent()
+	{
+		final String expected = "{	\n" +
+				"\"id\" : 100,	\n" +
+				"\"children\" : [ {	\n" +
+				"\n" +
+				"\"id\" : 200	\n" +
+				"} ]	}";
+
+		TestClass c = new TestClass();
+		c.id = 100l;
+		c.children = new ArrayList<>();
+		c.children.add(new TestClass());
+		c.children.get(0).id = 200l;
+
+		Jackie j = new Jackie().withPrettyPrint().withLineIndent("\t").withTabIndent("\n");
+		Assertions.assertEquals(expected, j.toJson(c));
 	}
 
 }
