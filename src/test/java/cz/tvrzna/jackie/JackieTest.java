@@ -218,7 +218,15 @@ public class JackieTest
 		JackieElement el = JackieBuilder.fromString(source);
 
 		String result = j.toJson(el);
-//		Assertions.assertEquals(expected, result);
+		Assertions.assertEquals(expected, result);
+	}
+
+	public void testNotParseBracketsAsList()
+	{
+		final String source = "{\n" + "  \"\\ndata\" : [ \"[n\\not-array]\" ]\n" + "}";
+
+		JackieElement e = JackieBuilder.fromString(source);
+		Assertions.assertEquals(source, new Jackie().withPrettyPrint().withTabIndent("  ").toJson(e));
 	}
 
 }
