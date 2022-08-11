@@ -108,10 +108,13 @@ public class Deserializator
 		List<Object> result = new ArrayList<>();
 
 		StringWriter sw = new StringWriter();
+		Integer delimiter = null;
 		int c;
+		boolean previousWasEscape = false;
+		boolean isInQuotes = false;
 		while ((c = input.read()) >= 0)
 		{
-			if (c == ']' || c == ',')
+			if ((c == ']' || c == ',') && !isInQuotes)
 			{
 				Object o = deserialize(sw.toString(), config);
 				if (o != null)
@@ -124,19 +127,42 @@ public class Deserializator
 					break;
 				}
 			}
-			else if (c == '[')
+			else if (c == '[' && !isInQuotes)
 			{
 				result.add(deserializeToList(input, config));
 				sw = new StringWriter();
 			}
-			else if (c == '{')
+			else if (c == '{' && !isInQuotes)
 			{
 				result.add(deserializeToMap(input, config));
 				sw = new StringWriter();
 			}
+			else if (delimiter == null && !previousWasEscape && (c == '\'' || c == '"'))
+			{
+				delimiter = c;
+				isInQuotes = true;
+				sw.write(c);
+			}
+			else if (delimiter != null && c == delimiter && !previousWasEscape)
+			{
+				isInQuotes = false;
+				sw.write(c);
+			}
 			else
 			{
-				sw.write(c);
+				if (previousWasEscape && c != '"' && c != '\'')
+				{
+					String character = "\\" + Character.toString((char) c);
+					for (ESCAPE_CHARACTERS escape : ESCAPE_CHARACTERS.values())
+					{
+						character = character.replace(escape.getValue(), escape.getCharacter());
+					}
+					sw.write(character);
+				}
+				else
+				{
+					sw.write(c);
+				}
 			}
 		}
 
