@@ -75,16 +75,14 @@ public class Serializator
 		}
 		else if (value instanceof String)
 		{
-			String data = getSeparator().concat(((String) value).replace(getSeparator(), "\\".concat(getSeparator()))).concat(getSeparator());
-			for (ESCAPE_CHARACTERS escape : ESCAPE_CHARACTERS.values())
-			{
-				data = data.replace(escape.getCharacter(), escape.getValue());
-			}
-			return data;
+			return serializeString((String) value, config);
 		}
 		else if (value instanceof Number)
 		{
-			return value.toString().replace(",", ".");
+			StringBuilder sb = new StringBuilder(value.toString());
+			CommonUtils.stringBuilderReplace(sb, ",", ".");
+
+			return sb.toString();
 		}
 		else if (value instanceof Boolean)
 		{
@@ -95,7 +93,31 @@ public class Serializator
 			DateFormat df = Optional.ofNullable(config.getDateFormat()).orElse(new SimpleDateFormat(CommonUtils.DATE_FORMAT_JSON));
 			return getSeparator().concat(df.format(value)).concat(getSeparator());
 		}
-		return getSeparator().concat((value.toString()).replace(getSeparator(), "\\".concat(getSeparator()))).concat(getSeparator());
+		return serializeString(value.toString(), config);
+	}
+
+	/**
+	 * Serialize string.
+	 *
+	 * @param value
+	 *          the value
+	 * @param config
+	 *          the config
+	 * @return the string
+	 */
+	private static String serializeString(String value, Config config)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(value);
+		CommonUtils.stringBuilderReplace(sb, getSeparator(), "\\".concat(getSeparator()));
+		for (ESCAPE_CHARACTERS escape : ESCAPE_CHARACTERS.values())
+		{
+			CommonUtils.stringBuilderReplace(sb, escape.getCharacter(), escape.getValue());
+		}
+
+		sb.insert(0, getSeparator());
+		sb.append(getSeparator());
+		return sb.toString();
 	}
 
 	/**
