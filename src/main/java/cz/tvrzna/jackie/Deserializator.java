@@ -152,12 +152,13 @@ public class Deserializator
 			{
 				if (previousWasEscape && c != '"' && c != '\'')
 				{
-					String character = "\\" + Character.toString((char) c);
+					StringBuilder sb = new StringBuilder("\\");
+					sb.append(Character.toString((char) c));
 					for (ESCAPE_CHARACTERS escape : ESCAPE_CHARACTERS.values())
 					{
-						character = character.replace(escape.getValue(), escape.getCharacter());
+						CommonUtils.stringBuilderReplace(sb, escape.getValue(), escape.getCharacter());
 					}
-					sw.write(character);
+					sw.write(sb.toString());
 				}
 				else
 				{
@@ -225,12 +226,13 @@ public class Deserializator
 			{
 				if (previousWasEscape && c != '"' && c != '\'')
 				{
-					String character = "\\" + Character.toString((char) c);
+					StringBuilder sb = new StringBuilder("\\");
+					sb.append(Character.toString((char) c));
 					for (ESCAPE_CHARACTERS escape : ESCAPE_CHARACTERS.values())
 					{
-						character = character.replace(escape.getValue(), escape.getCharacter());
+						CommonUtils.stringBuilderReplace(sb, escape.getValue(), escape.getCharacter());
 					}
-					sw.write(character);
+					sw.write(sb.toString());
 				}
 				else
 				{
@@ -288,6 +290,19 @@ public class Deserializator
 	 */
 	private static String sanitize(String value, Config config)
 	{
-		return value.trim().replaceAll("(^['\"]|['\"]$)", "").trim();
+		StringBuilder sb = new StringBuilder(value.trim());
+		char c = sb.charAt(0);
+		if (c == '"' || c == '\'')
+		{
+			sb.deleteCharAt(0);
+		}
+
+		c = sb.charAt(sb.length() - 1);
+		if (c == '"' || c == '\'')
+		{
+			sb.deleteCharAt(sb.length() - 1);
+		}
+
+		return sb.toString().trim();
 	}
 }
