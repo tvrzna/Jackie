@@ -4,6 +4,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -161,6 +163,14 @@ public class DeserializationMapper
 		else if (Double.class.equals(clazz) || double.class.equals(clazz))
 		{
 			return Double.parseDouble(value);
+		}
+		else if (BigInteger.class.equals(clazz))
+		{
+			return BigInteger.valueOf(Long.parseLong(value));
+		}
+		else if (BigDecimal.class.equals(clazz))
+		{
+			return BigDecimal.valueOf(Double.parseDouble(value));
 		}
 		else if (Date.class.equals(clazz))
 		{
