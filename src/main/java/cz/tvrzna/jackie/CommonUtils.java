@@ -247,4 +247,32 @@ public class CommonUtils
 		return list.toArray();
 	}
 
+	/**
+	 * String Builder replace.
+	 *
+	 * @param sb
+	 *          the sb
+	 * @param target
+	 *          the target
+	 * @param replacement
+	 *          the replacement
+	 */
+	protected static void stringBuilderReplace(StringBuilder sb, String target, String replacement)
+	{
+		for (int i = 0; i < sb.length(); i++)
+		{
+			if (i + 1 >= sb.length())
+			{
+				break;
+			}
+			i = sb.indexOf(target, i);
+			if (i < 0)
+			{
+				break;
+			}
+			sb.replace(i, i + target.length(), replacement);
+			i = i - target.length() + replacement.length();
+		}
+	}
+
 }
