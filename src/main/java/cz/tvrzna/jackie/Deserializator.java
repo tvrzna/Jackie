@@ -241,7 +241,7 @@ public class Deserializator
 				previousWasEscape = false;
 			}
 		}
-		String value = sanitize(sw.toString(), config);
+		String value = sw.toString().trim();
 		if (config.isUseObjectWrapper() && !usedQuotes)
 		{
 			if (isNumeric(value))
