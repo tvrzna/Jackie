@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.tvrzna</groupId>
 	<artifactId>jackie</artifactId>
-	<version>0.4.1</version>
+	<version>0.4.2</version>
 
 	<name>Jackie</name>
 	<description>Simple JSON serialization and deserialization from/to object.</description>
