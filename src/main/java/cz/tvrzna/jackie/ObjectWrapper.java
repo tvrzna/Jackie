@@ -4,6 +4,7 @@ package cz.tvrzna.jackie;
  * The Class ObjectWrapper.
  *
  * @author michalt
+ * @param <T> the generic type
  */
 public class ObjectWrapper<T>
 {
@@ -14,7 +15,6 @@ public class ObjectWrapper<T>
 	 * Instantiates a new object wrapper.
 	 *
 	 * @param value the value
-	 * @param clazz the clazz
 	 */
 	@SuppressWarnings("unchecked")
 	public ObjectWrapper(T value)
