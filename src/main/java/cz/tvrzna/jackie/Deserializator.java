@@ -250,16 +250,16 @@ public class Deserializator
 			{
 				if (value.contains(".") || value.contains(","))
 				{
-					return new ObjectWrapper(new BigDecimal(value), BigDecimal.class);
+					return new ObjectWrapper<>(new BigDecimal(value));
 				}
 				else
 				{
-					return new ObjectWrapper(new BigInteger(value), BigInteger.class);
+					return new ObjectWrapper<>(new BigInteger(value));
 				}
 			}
 			else if ("true".equals(value) || "false".equals(value))
 			{
-				return new ObjectWrapper(Boolean.parseBoolean(value), Boolean.class);
+				return new ObjectWrapper<>(Boolean.parseBoolean(value));
 			}
 		}
 		return value;

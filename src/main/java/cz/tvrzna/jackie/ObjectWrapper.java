@@ -5,10 +5,10 @@ package cz.tvrzna.jackie;
  *
  * @author michalt
  */
-public class ObjectWrapper
+public class ObjectWrapper<T>
 {
-	private final Object value;
-	private final Class<?> clazz;
+	private final T value;
+	private final Class<T> clazz;
 
 	/**
 	 * Instantiates a new object wrapper.
@@ -16,10 +16,11 @@ public class ObjectWrapper
 	 * @param value the value
 	 * @param clazz the clazz
 	 */
-	public ObjectWrapper(Object value, Class<?> clazz)
+	@SuppressWarnings("unchecked")
+	public ObjectWrapper(T value)
 	{
 		this.value = value;
-		this.clazz = clazz;
+		this.clazz = value != null ? (Class<T>) value.getClass() : null;
 	}
 
 	/**
@@ -27,7 +28,7 @@ public class ObjectWrapper
 	 *
 	 * @return the clazz
 	 */
-	public Class<?> getClazz()
+	public Class<T> getClazz()
 	{
 		return clazz;
 	}
@@ -37,7 +38,7 @@ public class ObjectWrapper
 	 *
 	 * @return the value
 	 */
-	public Object getValue()
+	public T getValue()
 	{
 		return value;
 	}
