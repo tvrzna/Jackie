@@ -198,6 +198,7 @@ public class Jackie
 	 * <code>null</code>, it uses default <code>\n</code>.
 	 *
 	 * @param symbol
+	 *          the symbol
 	 * @return the jackie
 	 * @since 0.4.0
 	 */
@@ -208,10 +209,11 @@ public class Jackie
 	}
 
 	/**
-	 * Sets custom symbol for tab indentation. Works only with pretty print. If is set to
-	 * <code>null</code>, it uses default <code>\t</code>.
+	 * Sets custom symbol for tab indentation. Works only with pretty print. If is
+	 * set to <code>null</code>, it uses default <code>\t</code>.
 	 *
 	 * @param symbol
+	 *          the symbol
 	 * @return the jackie
 	 * @since 0.4.0
 	 */
