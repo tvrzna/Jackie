@@ -2,6 +2,8 @@ package cz.tvrzna.jackie;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -246,13 +248,13 @@ public class Deserializator
 		{
 			if (isNumeric(value))
 			{
-				if (value.contains("."))
+				if (value.contains(".") || value.contains(","))
 				{
-					return new ObjectWrapper(Double.parseDouble(value), Double.class);
+					return new ObjectWrapper(new BigDecimal(value), BigDecimal.class);
 				}
 				else
 				{
-					return new ObjectWrapper(Long.parseLong(value), Long.class);
+					return new ObjectWrapper(new BigInteger(value), BigInteger.class);
 				}
 			}
 			else if ("true".equals(value) || "false".equals(value))
@@ -271,7 +273,8 @@ public class Deserializator
 		}
 		for (int i = 0; i < value.length(); i++)
 		{
-			if (!Character.isDigit(value.charAt(i)))
+			char c = value.charAt(i);
+			if (!Character.isDigit(c) && c != '.' && c != ',')
 			{
 				return false;
 			}

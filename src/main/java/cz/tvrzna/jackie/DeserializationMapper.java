@@ -166,11 +166,11 @@ public class DeserializationMapper
 		}
 		else if (BigInteger.class.equals(clazz))
 		{
-			return BigInteger.valueOf(Long.parseLong(value));
+			return new BigInteger(value);
 		}
 		else if (BigDecimal.class.equals(clazz))
 		{
-			return BigDecimal.valueOf(Double.parseDouble(value));
+			return new BigDecimal(value);
 		}
 		else if (Date.class.equals(clazz))
 		{

@@ -245,4 +245,12 @@ public class JackieTest
 		Assertions.assertEquals(expected, j.toJson(c));
 	}
 
+	@Test
+	public void testNumberParsing() {
+		final String json = "{\"bigDecimal\":111605021215187089344548.5456,\"bigInteger\":11160502121518708948435345}";
+		JackieElement e = JackieBuilder.fromString(json);
+
+		Assertions.assertEquals(json, new Jackie().toJson(e));
+	}
+
 }
