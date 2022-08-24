@@ -350,7 +350,14 @@ public class DeserializationMapper
 	private static <T> void fillField(T result, Map<String, Object> map, Field field, Config config) throws Exception
 	{
 		field.setAccessible(true);
-		Object value = map.get(field.getName());
+		String name = field.getName();
+		JackieAttribute attribute = field.getAnnotation(JackieAttribute.class);
+		if (attribute != null)
+		{
+			name = attribute.value();
+		}
+
+		Object value = map.get(name);
 		Class<?> clazz = field.getType();
 
 		if (value == null)

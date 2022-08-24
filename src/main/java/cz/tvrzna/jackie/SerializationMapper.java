@@ -110,7 +110,13 @@ public class SerializationMapper
 		Object value = field.get(object);
 		if (null != value)
 		{
-			result.put(field.getName(), convertFromObject(value, config));
+			String name = field.getName();
+			JackieAttribute attribute = field.getAnnotation(JackieAttribute.class);
+			if (attribute != null)
+			{
+				name = attribute.value();
+			}
+			result.put(name, convertFromObject(value, config));
 		}
 	}
 

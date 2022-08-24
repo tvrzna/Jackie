@@ -27,6 +27,9 @@ public class JackieTest
 		protected String name;
 		protected List<TestClass> children;
 		protected Map<String, TestClass> mapChildren;
+
+		@JackieAttribute("default")
+		protected Boolean def;
 	}
 
 	@Test
@@ -251,6 +254,16 @@ public class JackieTest
 		JackieElement e = JackieBuilder.fromString(json);
 
 		Assertions.assertEquals(json, new Jackie().toJson(e));
+	}
+
+	@Test
+	public void testAnnotation()
+	{
+		final String json = "{\"id\":0,\"default\":true}";
+		TestClass t = new Jackie().fromJson(json, TestClass.class);
+
+		Assertions.assertEquals(Boolean.TRUE, t.def);
+		Assertions.assertEquals(json, new Jackie().toJson(t));
 	}
 
 }
