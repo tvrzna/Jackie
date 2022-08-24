@@ -351,10 +351,10 @@ public class DeserializationMapper
 	{
 		field.setAccessible(true);
 		String name = field.getName();
-		JackieAttribute attribute = field.getAnnotation(JackieAttribute.class);
-		if (attribute != null)
+		JackieProperty property = field.getAnnotation(JackieProperty.class);
+		if (property != null)
 		{
-			name = attribute.value();
+			name = property.value();
 		}
 
 		Object value = map.get(name);

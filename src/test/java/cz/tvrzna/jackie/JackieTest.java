@@ -28,7 +28,7 @@ public class JackieTest
 		protected List<TestClass> children;
 		protected Map<String, TestClass> mapChildren;
 
-		@JackieAttribute("default")
+		@JackieProperty("default")
 		protected Boolean def;
 	}
 

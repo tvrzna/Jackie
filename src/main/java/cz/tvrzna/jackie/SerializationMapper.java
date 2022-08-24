@@ -111,10 +111,10 @@ public class SerializationMapper
 		if (null != value)
 		{
 			String name = field.getName();
-			JackieAttribute attribute = field.getAnnotation(JackieAttribute.class);
-			if (attribute != null)
+			JackieProperty property = field.getAnnotation(JackieProperty.class);
+			if (property != null)
 			{
-				name = attribute.value();
+				name = property.value();
 			}
 			result.put(name, convertFromObject(value, config));
 		}

@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * This annotation defines alternative name for attribute to provide java
+ * This annotation defines alternative name for property to provide java
  * reserved names.
  *
  * @author michalt
@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface JackieAttribute
+public @interface JackieProperty
 {
 	String value();
 }
