@@ -1,6 +1,7 @@
 package cz.tvrzna.jackie;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,30 @@ public class Jackie
 		{
 			Object o = SerializationMapper.convertFromObject(object, config);
 			return Serializator.serialize(o, config, 0);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Converts single object into JSON as <code>OutputStream</code>.
+	 *
+	 * @param <T>
+	 *          the generic type
+	 * @param object
+	 *          the object
+	 * @param os
+	 *          the os
+	 * @since 0.5.0
+	 */
+	public <T> void toJson(T object, OutputStream os)
+	{
+		try
+		{
+			Object o = SerializationMapper.convertFromObject(object, config);
+			Serializator.serialize(os, o, config, 0);
 		}
 		catch (Exception e)
 		{

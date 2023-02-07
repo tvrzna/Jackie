@@ -1,6 +1,7 @@
 package cz.tvrzna.jackie;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -124,6 +125,11 @@ public class JackieTest
 		byte[] arr = new byte[]
 		{ 3, 6, 22, 50 };
 		Assertions.assertEquals(expected, new Jackie().toJson(arr));
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		new Jackie().toJson(arr, baos);
+
+		Assertions.assertEquals(expected, baos.toString());
 	}
 
 	@Test

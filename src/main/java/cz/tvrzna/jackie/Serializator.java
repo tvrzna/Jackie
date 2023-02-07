@@ -1,5 +1,9 @@
 package cz.tvrzna.jackie;
 
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +30,52 @@ public class Serializator
 	/**
 	 * Serialize <code>object</code> to <code>String</code>.
 	 *
+	 * @param w
+	 *          the w
+	 * @param object
+	 *          the object
+	 * @param config
+	 *          the config
+	 * @param indent
+	 *          the indent
+	 * @return the string
+	 * @throws Exception
+	 *           the exception
+	 */
+	protected static String serialize(Object object, Config config, int indent) throws Exception
+	{
+		StringWriter sw = new StringWriter();
+		serialize(sw, object, config, indent);
+		return sw.toString();
+	}
+
+	/**
+	 * Serialize <code>object</code> to <code>OutputStream</code>.
+	 *
+	 * @param w
+	 *          the w
+	 * @param object
+	 *          the object
+	 * @param config
+	 *          the config
+	 * @param indent
+	 *          the indent
+	 * @return the string
+	 * @throws Exception
+	 *           the exception
+	 */
+	protected static void serialize(OutputStream os, Object object, Config config, int indent) throws Exception
+	{
+		OutputStreamWriter sw = new OutputStreamWriter(os);
+		serialize(sw, object, config, indent);
+		sw.close();
+	}
+
+	/**
+	 * Serialize <code>object</code>.
+	 *
+	 * @param w
+	 *          the w
 	 * @param object
 	 *          the object
 	 * @param config
@@ -37,63 +87,73 @@ public class Serializator
 	 *           the exception
 	 */
 	@SuppressWarnings("unchecked")
-	protected static String serialize(Object object, Config config, int indent) throws Exception
+	private static void serialize(Writer w, Object object, Config config, int indent) throws Exception
 	{
 		if (object instanceof List)
 		{
-			return serializeList((List<Object>) object, config, indent);
+			serializeList(w, (List<Object>) object, config, indent);
 		}
 		else if (object instanceof Map)
 		{
-			return serializeMap((Map<Object, Object>) object, config, indent);
+			serializeMap(w, (Map<Object, Object>) object, config, indent);
 		}
 		else if (object.getClass().isArray())
 		{
-			return serializeArray((Object[]) object, config, indent);
+			serializeArray(w, (Object[]) object, config, indent);
 		}
 		else
 		{
-			return serializeValue(object, config);
+			serializeValue(w, object, config);
 		}
 	}
 
 	/**
 	 * Serialize value.
 	 *
+	 * @param w
+	 *          the w
 	 * @param value
 	 *          the value
-	 *
 	 * @param config
 	 *          the config
 	 * @return the string
+	 * @throws Exception
+	 *           the exception
 	 */
-	private static String serializeValue(Object value, Config config)
+	private static void serializeValue(Writer w, Object value, Config config) throws Exception
 	{
 		if (value == null)
 		{
-			return "null";
+			w.append("null");
+			return;
 		}
 		else if (value instanceof String)
 		{
-			return serializeString((String) value, config);
+			w.append(serializeString((String) value, config));
+			return;
 		}
 		else if (value instanceof Number)
 		{
 			StringBuilder sb = new StringBuilder(value.toString());
 			CommonUtils.stringBuilderReplace(sb, ",", ".");
 
-			return sb.toString();
+			w.append(sb.toString());
+			return;
 		}
 		else if (value instanceof Boolean)
 		{
-			return value.toString();
+			w.append(value.toString());
+			return;
 		}
 		else if (value instanceof Date)
 		{
 			DateFormat df = Optional.ofNullable(config.getDateFormat()).orElse(new SimpleDateFormat(CommonUtils.DATE_FORMAT_JSON));
-			return getSeparator().concat(df.format(value)).concat(getSeparator());
+			w.append(getSeparator());
+			w.append(df.format(value));
+			w.append(getSeparator());
+			return;
 		}
-		return serializeString(value.toString(), config);
+		w.append(serializeString(value.toString(), config));
 	}
 
 	/**
@@ -123,6 +183,8 @@ public class Serializator
 	/**
 	 * Serialize map.
 	 *
+	 * @param w
+	 *          the w
 	 * @param map
 	 *          the map
 	 * @param config
@@ -133,69 +195,75 @@ public class Serializator
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeMap(Map<Object, Object> map, Config config, int indent) throws Exception
+	private static void serializeMap(Writer w, Map<Object, Object> map, Config config, int indent) throws Exception
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
+		w.append("{");
 		indent++;
 		List<Entry<Object, Object>> list = new ArrayList<>(map.entrySet());
 		for (int i = 0; i < list.size(); i++)
 		{
-			if (i == 0) {
+			if (i == 0)
+			{
 				if (config.isPrettyPrint())
 				{
-					sb.append(config.getPrettyLineSymbol());
+					w.append(config.getPrettyLineSymbol());
 				}
 			}
 
 			Entry<Object, Object> entry = list.get(i);
 
-			String key = serializeValue(entry.getKey(), config);
+			StringWriter sw = new StringWriter();
+			serializeValue(sw, entry.getKey(), config);
+			String key = sw.toString();
+
 			boolean requireSeparator = !key.startsWith(getSeparator()) || !key.endsWith(getSeparator());
 			if (config.isPrettyPrint())
 			{
 				for (int j = 0; j < indent; j++)
 				{
-					sb.append(config.getPrettyIndentSymbol());
+					w.append(config.getPrettyIndentSymbol());
 				}
 			}
-			sb.append(requireSeparator ? getSeparator() : "").append(key).append(requireSeparator ? getSeparator() : "");
+			w.append(requireSeparator ? getSeparator() : "").append(key).append(requireSeparator ? getSeparator() : "");
 			if (config.isPrettyPrint())
 			{
-				sb.append(" : ");
-			} else {
-				sb.append(":");
+				w.append(" : ");
 			}
-			sb.append(serialize(entry.getValue(), config, indent));
+			else
+			{
+				w.append(":");
+			}
+			serialize(w, entry.getValue(), config, indent);
 			if (i < list.size() - 1)
 			{
-				sb.append(",");
+				w.append(",");
 				if (config.isPrettyPrint())
 				{
-					sb.append(config.getPrettyLineSymbol());
+					w.append(config.getPrettyLineSymbol());
 				}
 			}
 		}
 		if (config.isPrettyPrint() && list.isEmpty())
 		{
-			sb.append(" ");
+			w.append(" ");
 		}
 		indent--;
 		if (config.isPrettyPrint() && !list.isEmpty())
 		{
-			sb.append(config.getPrettyLineSymbol());
+			w.append(config.getPrettyLineSymbol());
 			for (int j = 0; j < indent; j++)
 			{
-				sb.append(config.getPrettyIndentSymbol());
+				w.append(config.getPrettyIndentSymbol());
 			}
 		}
-		sb.append("}");
-		return sb.toString();
+		w.append("}");
 	}
 
 	/**
 	 * Serialize list.
 	 *
+	 * @param w
+	 *          the w
 	 * @param list
 	 *          the list
 	 * @param config
@@ -206,37 +274,37 @@ public class Serializator
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeList(List<Object> list, Config config, int indent) throws Exception
+	private static void serializeList(Writer w, List<Object> list, Config config, int indent) throws Exception
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("[");
+		w.append("[");
 		if (config.isPrettyPrint())
 		{
-			sb.append(" ");
+			w.append(" ");
 		}
 		for (int i = 0; i < list.size(); i++)
 		{
-			sb.append(serialize(list.get(i), config, indent));
+			serialize(w, list.get(i), config, indent);
 			if (i < list.size() - 1)
 			{
-				sb.append(",");
+				w.append(",");
 				if (config.isPrettyPrint())
 				{
-					sb.append(" ");
+					w.append(" ");
 				}
 			}
 		}
 		if (config.isPrettyPrint())
 		{
-			sb.append(" ");
+			w.append(" ");
 		}
-		sb.append("]");
-		return sb.toString();
+		w.append("]");
 	}
 
 	/**
 	 * Serialize array.
 	 *
+	 * @param w
+	 *          the w
 	 * @param arr
 	 *          the list
 	 * @param config
@@ -247,32 +315,30 @@ public class Serializator
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static String serializeArray(Object[] arr, Config config, int indent) throws Exception
+	private static void serializeArray(Writer w, Object[] arr, Config config, int indent) throws Exception
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("[");
+		w.append("[");
 		if (config.isPrettyPrint())
 		{
-			sb.append(" ");
+			w.append(" ");
 		}
 		for (int i = 0; i < arr.length; i++)
 		{
-			sb.append(serialize(arr[i], config, indent));
+			serialize(w, arr[i], config, indent);
 			if (i < arr.length - 1)
 			{
-				sb.append(",");
+				w.append(",");
 				if (config.isPrettyPrint())
 				{
-					sb.append(" ");
+					w.append(" ");
 				}
 			}
 		}
 		if (config.isPrettyPrint())
 		{
-			sb.append(" ");
+			w.append(" ");
 		}
-		sb.append("]");
-		return sb.toString();
+		w.append("]");
 	}
 
 	/**
