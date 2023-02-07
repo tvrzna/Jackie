@@ -1,5 +1,7 @@
 package cz.tvrzna.jackie;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -39,6 +41,11 @@ public class JackieTest
 		String[] arr = new Jackie().fromJson(json, String[].class);
 		Assertions.assertNotNull(arr);
 		Assertions.assertEquals(3, arr.length);
+
+		ByteArrayInputStream bais = new ByteArrayInputStream(json.getBytes());
+		String[] arr2 = new Jackie().fromJson(bais, String[].class);
+		Assertions.assertNotNull(arr2);
+		Assertions.assertEquals(3, arr2.length);
 	}
 
 	@Test
@@ -66,6 +73,11 @@ public class JackieTest
 		List<Boolean> lst = new Jackie().fromJsonList(json, boolean.class);
 		Assertions.assertNotNull(lst);
 		Assertions.assertEquals(2, lst.size());
+
+		ByteArrayInputStream bais = new ByteArrayInputStream(json.getBytes());
+		List<Boolean> lst2 = new Jackie().fromJsonList(bais, boolean.class);
+		Assertions.assertNotNull(lst2);
+		Assertions.assertEquals(2, lst2.size());
 	}
 
 	@Test
@@ -75,6 +87,11 @@ public class JackieTest
 		Map<Integer, String> map = new Jackie().fromJsonMap(json, Integer.class, String.class);
 		Assertions.assertEquals(2, map.size());
 		Assertions.assertEquals("bye", map.get(1));
+
+		ByteArrayInputStream bais = new ByteArrayInputStream(json.getBytes());
+		Map<Integer, String> map2 = new Jackie().fromJsonMap(bais, Integer.class, String.class);
+		Assertions.assertEquals(2, map2.size());
+		Assertions.assertEquals("bye", map2.get(1));
 	}
 
 	@Test
@@ -187,29 +204,12 @@ public class JackieTest
 	@Test
 	public void testPrettyPrint()
 	{
-		final String expected = "{\n" +
-				"	\"glossary\" : {\n" +
-				"		\"title\" : \"example glossary\",\n" +
-				"		\"GlossDiv\" : {\n" +
-				"			\"title\" : \"S\",\n" +
-				"			\"GlossList\" : {\n" +
-				"				\"GlossEntry\" : {\n" +
-				"					\"ID\" : \"SGML\",\n" +
-				"					\"SortAs\" : \"SGML\",\n" +
-				"					\"GlossTerm\" : \"Standard Generalized Markup Language\",\n" +
-				"					\"Acronym\" : \"SGML\",\n" +
-				"					\"Abbrev\" : \"ISO 8879:1986\",\n" +
-				"					\"GlossDef\" : {\n" +
-				"						\"para\" : \"A meta-markup language, used to create markup languages such as DocBook.\",\n" +
-				"						\"GlossSeeAlso\" : [ \"GML\", \"XML\", {\n" +
-				"							\"hello\" : \"there\"\n" +
-				"						} ]\n" +
-				"					}\n" +
-				"				}\n" +
-				"			}\n" +
-				"		}\n" +
-				"	}\n" +
-				"}";
+		final String expected = "{\n" + "	\"glossary\" : {\n" + "		\"title\" : \"example glossary\",\n" + "		\"GlossDiv\" : {\n" + "			\"title\" : \"S\",\n" +
+				"			\"GlossList\" : {\n" + "				\"GlossEntry\" : {\n" + "					\"ID\" : \"SGML\",\n" + "					\"SortAs\" : \"SGML\",\n" +
+				"					\"GlossTerm\" : \"Standard Generalized Markup Language\",\n" + "					\"Acronym\" : \"SGML\",\n" + "					\"Abbrev\" : \"ISO 8879:1986\",\n" +
+				"					\"GlossDef\" : {\n" + "						\"para\" : \"A meta-markup language, used to create markup languages such as DocBook.\",\n" +
+				"						\"GlossSeeAlso\" : [ \"GML\", \"XML\", {\n" + "							\"hello\" : \"there\"\n" + "						} ]\n" + "					}\n" + "				}\n" + "			}\n" +
+				"		}\n" + "	}\n" + "}";
 
 		Jackie j = new Jackie().withPrettyPrint();
 		String source = "{\"glossary\":{\"title\":\"example glossary\",\"GlossDiv\":{\"title\":\"S\",\"GlossList\":{\"GlossEntry\":{\"ID\":\"SGML\",\"SortAs\":\"SGML\",\"GlossTerm\":\"Standard Generalized Markup Language\",\"Acronym\":\"SGML\",\"Abbrev\":\"ISO 8879:1986\",\"GlossDef\":{\"para\":\"A meta-markup language, used to create markup languages such as DocBook.\",\"GlossSeeAlso\":[\"GML\",\"XML\", {\"hello\": \"there\"]},\"GlossSee\":\"markup\"}}}}}";
@@ -231,12 +231,7 @@ public class JackieTest
 	@Test
 	public void testPrettyPrintCustomIndent()
 	{
-		final String expected = "{	\n" +
-				"\"id\" : 100,	\n" +
-				"\"children\" : [ {	\n" +
-				"\n" +
-				"\"id\" : 200	\n" +
-				"} ]	}";
+		final String expected = "{	\n" + "\"id\" : 100,	\n" + "\"children\" : [ {	\n" + "\n" + "\"id\" : 200	\n" + "} ]	}";
 
 		TestClass c = new TestClass();
 		c.id = 100l;
@@ -249,7 +244,8 @@ public class JackieTest
 	}
 
 	@Test
-	public void testNumberParsing() {
+	public void testNumberParsing()
+	{
 		final String json = "{\"bigDecimal\":111605021215187089344548.5456,\"bigInteger\":11160502121518708948435345}";
 		JackieElement e = JackieBuilder.fromString(json);
 
@@ -266,4 +262,18 @@ public class JackieTest
 		Assertions.assertEquals(json, new Jackie().toJson(t));
 	}
 
+	@Test
+	public void testNullInputStream()
+	{
+		TestClass t = new Jackie().fromJson((InputStream) null, TestClass.class);
+		Assertions.assertNull(t);
+	}
+
+	@Test
+	public void testWrongClass()
+	{
+		Assertions.assertThrows(RuntimeException.class, () -> {
+			new Jackie().fromJson("[]", Map.class);
+		});
+	}
 }

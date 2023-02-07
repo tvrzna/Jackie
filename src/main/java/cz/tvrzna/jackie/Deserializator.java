@@ -1,5 +1,8 @@
 package cz.tvrzna.jackie;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -36,8 +39,35 @@ public class Deserializator
 	protected static Object deserialize(String input, Config config) throws Exception
 	{
 		StringReader reader = new StringReader(input.trim());
+		return deserialize(reader, config);
+	}
 
+	/**
+	 * Deserialize.
+	 *
+	 * @param input the input
+	 * @param config the config
+	 * @return the object
+	 * @throws Exception the exception
+	 */
+	protected static Object deserialize(InputStream input, Config config) throws Exception
+	{
+		InputStreamReader reader = new InputStreamReader(input);
+		return deserialize(reader, config);
+	}
+
+	/**
+	 * Deserialize.
+	 *
+	 * @param reader the reader
+	 * @param config the config
+	 * @return the object
+	 * @throws Exception the exception
+	 */
+	private static Object deserialize(Reader reader, Config config) throws Exception
+	{
 		int c;
+		StringWriter sw = new StringWriter();
 		if ((c = reader.read()) >= 0)
 		{
 			if (c == '{')
@@ -50,11 +80,16 @@ public class Deserializator
 			}
 			else
 			{
-				return sanitize(input, config);
+				sw.write(c);
 			}
 		}
 
-		return null;
+		while ((c = reader.read()) >= 0)
+		{
+			sw.write(c);
+		}
+
+		return sanitize(sw.toString(), config);
 	}
 
 	/**
@@ -68,7 +103,7 @@ public class Deserializator
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static Map<String, Object> deserializeToMap(StringReader input, Config config) throws Exception
+	private static Map<String, Object> deserializeToMap(Reader input, Config config) throws Exception
 	{
 		Map<String, Object> result = new LinkedHashMap<>();
 
@@ -105,7 +140,7 @@ public class Deserializator
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static List<Object> deserializeToList(StringReader input, Config config) throws Exception
+	private static List<Object> deserializeToList(Reader input, Config config) throws Exception
 	{
 		List<Object> result = new ArrayList<>();
 
@@ -183,7 +218,7 @@ public class Deserializator
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static Object deserializeValue(StringReader input, Config config) throws Exception
+	private static Object deserializeValue(Reader input, Config config) throws Exception
 	{
 		StringWriter sw = new StringWriter();
 		Integer delimiter = null;
@@ -293,6 +328,11 @@ public class Deserializator
 	 */
 	private static String sanitize(String value, Config config)
 	{
+		if (value == null || value.isEmpty())
+		{
+			return null;
+		}
+
 		StringBuilder sb = new StringBuilder(value.trim());
 		char c = sb.charAt(0);
 		if (c == '"' || c == '\'')
