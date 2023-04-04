@@ -18,6 +18,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import cz.tvrzna.jackie.annotations.JackieAdapter;
+import cz.tvrzna.jackie.annotations.JackieProperty;
+
 /**
  * The Class DeserializationMapper.
  *
@@ -266,7 +269,7 @@ public class DeserializationMapper
 	 */
 	private static <T> T convertFromMapToObject(Map<String, Object> map, Class<T> clazz, Config config) throws Exception
 	{
-		T result = clazz.newInstance();
+		T result = clazz.getDeclaredConstructor().newInstance();
 
 		for (Field field : CommonUtils.getFields(clazz))
 		{
@@ -347,7 +350,8 @@ public class DeserializationMapper
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static <T> void fillField(T result, Map<String, Object> map, Field field, Config config) throws Exception
+	@SuppressWarnings("unchecked")
+	private static <T, A> void fillField(T result, Map<String, Object> map, Field field, Config config) throws Exception
 	{
 		field.setAccessible(true);
 		String name = field.getName();
@@ -358,12 +362,21 @@ public class DeserializationMapper
 		}
 
 		Object value = map.get(name);
-		Class<?> clazz = field.getType();
+		Class<A> clazz = (Class<A>) field.getType();
 
 		if (value == null)
 		{
 			return;
 		}
-		field.set(result, convertToObject(value, clazz, field, null, null, config));
+
+		// TODO: cache adapter
+		JackieAdapter adapter = field.getAnnotation(JackieAdapter.class);
+		Adapter<A> adapterHandler = null;
+		if (adapter != null)
+		{
+			adapterHandler = (Adapter<A>) adapter.value().getDeclaredConstructor().newInstance();
+		}
+
+		field.set(result, adapterHandler == null ? convertToObject(value, clazz, field, null, null, config) : adapterHandler.deserialize((String) value));
 	}
 }

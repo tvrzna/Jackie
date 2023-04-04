@@ -7,6 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cz.tvrzna.jackie.annotations.JackieAdapter;
+import cz.tvrzna.jackie.annotations.JackieProperty;
+
 /**
  * The Class SerializationMapper.
  *
@@ -104,7 +107,8 @@ public class SerializationMapper
 	 * @throws Exception
 	 *           the exception
 	 */
-	private static <T> void processField(T object, Map<String, Object> result, Field field, Config config) throws Exception
+	@SuppressWarnings("unchecked")
+	private static <T, A> void processField(T object, Map<String, Object> result, Field field, Config config) throws Exception
 	{
 		field.setAccessible(true);
 		Object value = field.get(object);
@@ -116,7 +120,16 @@ public class SerializationMapper
 			{
 				name = property.value();
 			}
-			result.put(name, convertFromObject(value, config));
+
+			// TODO: cache adapter
+			JackieAdapter adapter = field.getAnnotation(JackieAdapter.class);
+			Adapter<A> adapterHandler = null;
+			if (adapter != null)
+			{
+				adapterHandler = (Adapter<A>) adapter.value().getDeclaredConstructor().newInstance();
+			}
+
+			result.put(name, adapterHandler == null ? convertFromObject(value, config) : adapterHandler.serialize((A) value));
 		}
 	}
 

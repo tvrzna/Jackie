@@ -8,16 +8,21 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import cz.tvrzna.jackie.JackieBuilder.JackieElement;
+import cz.tvrzna.jackie.annotations.JackieAdapter;
+import cz.tvrzna.jackie.annotations.JackieProperty;
 
 public class JackieTest
 {
@@ -33,6 +38,52 @@ public class JackieTest
 
 		@JackieProperty("default")
 		protected Boolean def;
+
+		@JackieAdapter(GzipDataAdapter.class)
+		@JackieProperty("gzipData")
+		protected byte[] gzipData;
+	}
+
+	public static class GzipDataAdapter implements Adapter<byte[]>
+	{
+
+		@Override
+		public byte[] deserialize(String text)
+		{
+			try
+			{
+				ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(text.getBytes()));
+				GZIPInputStream gzip = new GZIPInputStream(bais);
+				return gzip.readAllBytes();
+			}
+			catch (Exception e)
+			{
+				Assertions.fail(e);
+			}
+			return null;
+		}
+
+		@Override
+		public String serialize(byte[] value)
+		{
+			try
+			{
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				GZIPOutputStream gzip = new GZIPOutputStream(baos);
+
+				gzip.write(value);
+				gzip.close();
+				baos.close();
+
+				return new String(Base64.getEncoder().encode(baos.toByteArray()));
+			}
+			catch (Exception e)
+			{
+				Assertions.fail(e);
+			}
+			return null;
+		}
+
 	}
 
 	@Test
@@ -210,12 +261,29 @@ public class JackieTest
 	@Test
 	public void testPrettyPrint()
 	{
-		final String expected = "{\n" + "	\"glossary\" : {\n" + "		\"title\" : \"example glossary\",\n" + "		\"GlossDiv\" : {\n" + "			\"title\" : \"S\",\n" +
-				"			\"GlossList\" : {\n" + "				\"GlossEntry\" : {\n" + "					\"ID\" : \"SGML\",\n" + "					\"SortAs\" : \"SGML\",\n" +
-				"					\"GlossTerm\" : \"Standard Generalized Markup Language\",\n" + "					\"Acronym\" : \"SGML\",\n" + "					\"Abbrev\" : \"ISO 8879:1986\",\n" +
-				"					\"GlossDef\" : {\n" + "						\"para\" : \"A meta-markup language, used to create markup languages such as DocBook.\",\n" +
-				"						\"GlossSeeAlso\" : [ \"GML\", \"XML\", {\n" + "							\"hello\" : \"there\"\n" + "						} ]\n" + "					}\n" + "				}\n" + "			}\n" +
-				"		}\n" + "	}\n" + "}";
+		final String expected = "{\n" +
+				"	\"glossary\" : {\n" +
+				"		\"title\" : \"example glossary\",\n" +
+				"		\"GlossDiv\" : {\n" +
+				"			\"title\" : \"S\",\n" +
+				"			\"GlossList\" : {\n" +
+				"				\"GlossEntry\" : {\n" +
+				"					\"ID\" : \"SGML\",\n" +
+				"					\"SortAs\" : \"SGML\",\n" +
+				"					\"GlossTerm\" : \"Standard Generalized Markup Language\",\n" +
+				"					\"Acronym\" : \"SGML\",\n" +
+				"					\"Abbrev\" : \"ISO 8879:1986\",\n" +
+				"					\"GlossDef\" : {\n" +
+				"						\"para\" : \"A meta-markup language, used to create markup languages such as DocBook.\",\n" +
+				"						\"GlossSeeAlso\" : [ \"GML\", \"XML\", {\n" +
+				"							\"hello\" : \"there\"\n" +
+				"						} ]\n" +
+				"					}\n" +
+				"				}\n" +
+				"			}\n" +
+				"		}\n" +
+				"	}\n" +
+				"}";
 
 		Jackie j = new Jackie().withPrettyPrint();
 		String source = "{\"glossary\":{\"title\":\"example glossary\",\"GlossDiv\":{\"title\":\"S\",\"GlossList\":{\"GlossEntry\":{\"ID\":\"SGML\",\"SortAs\":\"SGML\",\"GlossTerm\":\"Standard Generalized Markup Language\",\"Acronym\":\"SGML\",\"Abbrev\":\"ISO 8879:1986\",\"GlossDef\":{\"para\":\"A meta-markup language, used to create markup languages such as DocBook.\",\"GlossSeeAlso\":[\"GML\",\"XML\", {\"hello\": \"there\"]},\"GlossSee\":\"markup\"}}}}}";
@@ -237,7 +305,12 @@ public class JackieTest
 	@Test
 	public void testPrettyPrintCustomIndent()
 	{
-		final String expected = "{	\n" + "\"id\" : 100,	\n" + "\"children\" : [ {	\n" + "\n" + "\"id\" : 200	\n" + "} ]	}";
+		final String expected = "{	\n" +
+				"\"id\" : 100,	\n" +
+				"\"children\" : [ {	\n" +
+				"\n" +
+				"\"id\" : 200	\n" +
+				"} ]	}";
 
 		TestClass c = new TestClass();
 		c.id = 100l;
@@ -281,5 +354,21 @@ public class JackieTest
 		Assertions.assertThrows(RuntimeException.class, () -> {
 			new Jackie().fromJson("[]", Map.class);
 		});
+	}
+
+	@Test
+	public void testGzip()
+	{
+		final String expected = "{\"id\":0,\"gzipData\":\"H4sIAAAAAAAAAPNIzcnJVwjPL8pJAQBWsRdKCwAAAA==\"}";
+
+		TestClass c = new TestClass();
+		c.gzipData = "Hello World".getBytes();
+
+		String json = new Jackie().toJson(c);
+		Assertions.assertEquals(expected, json);
+
+		TestClass c2 = new Jackie().fromJson(json, TestClass.class);
+		Assertions.assertEquals("Hello World", new String(c2.gzipData));
+
 	}
 }
