@@ -54,7 +54,18 @@ public class JackieTest
 			{
 				ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(text.getBytes()));
 				GZIPInputStream gzip = new GZIPInputStream(bais);
-				return gzip.readAllBytes();
+
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+				int c;
+				byte[] buffer = new byte[8];
+				while ((c = gzip.read(buffer, 0, buffer.length)) != -1)
+				{
+					baos.write(buffer, 0, c);
+				}
+				gzip.close();
+
+				return baos.toByteArray();
 			}
 			catch (Exception e)
 			{
