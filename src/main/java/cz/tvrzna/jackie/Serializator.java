@@ -23,6 +23,9 @@ import cz.tvrzna.jackie.CommonUtils.ESCAPE_CHARACTERS;
 public class Serializator
 {
 
+	/**
+	 * Instantiates a new serializator.
+	 */
 	private Serializator()
 	{
 	}
@@ -30,8 +33,6 @@ public class Serializator
 	/**
 	 * Serialize <code>object</code> to <code>String</code>.
 	 *
-	 * @param w
-	 *          the w
 	 * @param object
 	 *          the object
 	 * @param config
@@ -52,15 +53,14 @@ public class Serializator
 	/**
 	 * Serialize <code>object</code> to <code>OutputStream</code>.
 	 *
-	 * @param w
-	 *          the w
+	 * @param os
+	 *          the os
 	 * @param object
 	 *          the object
 	 * @param config
 	 *          the config
 	 * @param indent
 	 *          the indent
-	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
@@ -82,7 +82,6 @@ public class Serializator
 	 *          the config
 	 * @param indent
 	 *          the indent
-	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */
@@ -116,7 +115,6 @@ public class Serializator
 	 *          the value
 	 * @param config
 	 *          the config
-	 * @return the string
 	 * @throws Exception
 	 *           the exception
 	 */

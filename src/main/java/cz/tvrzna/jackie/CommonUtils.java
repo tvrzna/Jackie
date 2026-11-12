@@ -1,5 +1,7 @@
 package cz.tvrzna.jackie;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -9,6 +11,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import cz.tvrzna.jackie.annotations.JackieProperty;
+
+/**
+ * The Class CommonUtils.
+ *
+ * @author michalt
+ */
 public class CommonUtils
 {
 	protected static final String DATE_FORMAT_JSON = "yyyy-MM-dd'T'HH:mm:ss";
