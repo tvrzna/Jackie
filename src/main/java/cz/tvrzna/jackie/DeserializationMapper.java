@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import cz.tvrzna.jackie.annotations.JackieAdapter;
-import cz.tvrzna.jackie.annotations.JackieProperty;
 
 /**
  * The Class DeserializationMapper.
@@ -354,12 +353,7 @@ public class DeserializationMapper
 	private static <T, A> void fillField(T result, Map<String, Object> map, Field field, Config config) throws Exception
 	{
 		field.setAccessible(true);
-		String name = field.getName();
-		JackieProperty property = field.getAnnotation(JackieProperty.class);
-		if (property != null)
-		{
-			name = property.value();
-		}
+		String name = CommonUtils.getPropertyNameFromAnnotation(field);
 
 		Object value = map.get(name);
 		Class<A> clazz = (Class<A>) field.getType();
@@ -379,4 +373,6 @@ public class DeserializationMapper
 
 		field.set(result, adapterHandler == null ? convertToObject(value, clazz, field, null, null, config) : adapterHandler.deserialize((String) value));
 	}
+
+
 }

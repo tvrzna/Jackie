@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import cz.tvrzna.jackie.annotations.JackieAdapter;
-import cz.tvrzna.jackie.annotations.JackieProperty;
 
 /**
  * The Class SerializationMapper.
@@ -114,12 +113,7 @@ public class SerializationMapper
 		Object value = field.get(object);
 		if (null != value)
 		{
-			String name = field.getName();
-			JackieProperty property = field.getAnnotation(JackieProperty.class);
-			if (property != null)
-			{
-				name = property.value();
-			}
+			String name = CommonUtils.getPropertyNameFromAnnotation(field);
 
 			// TODO: cache adapter
 			JackieAdapter adapter = field.getAnnotation(JackieAdapter.class);

@@ -284,4 +284,68 @@ public class CommonUtils
 		}
 	}
 
+	/**
+	 * Gets the annotation property.
+	 *
+	 * @param element
+	 *          the element
+	 * @param annotationClassName
+	 *          the annotation class name
+	 * @param propertyName
+	 *          the property name
+	 * @return the annotation property
+	 * @throws Exception
+	 *           the exception
+	 */
+	protected static String getAnnotationProperty(AnnotatedElement element, String annotationClassName, String propertyName)
+	{
+		for (Annotation annotation : element.getAnnotations())
+		{
+			if (annotation.annotationType().getName().equals(annotationClassName))
+			{
+				try
+				{
+					Object value = annotation.annotationType().getMethod(propertyName).invoke(annotation);
+
+					return value instanceof String ? (String) value : null;
+				}
+				catch (ReflectiveOperationException | SecurityException e)
+				{
+					return null;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the property name from annotation.
+	 *
+	 * @param field
+	 *          the field
+	 * @return the property name from annotation
+	 */
+	protected static String getPropertyNameFromAnnotation(Field field)
+	{
+		JackieProperty property = field.getAnnotation(JackieProperty.class);
+		if (property != null)
+		{
+			return property.value();
+		}
+
+		String jacksonNameFallback = CommonUtils.getAnnotationProperty(field, "com.fasterxml.jackson.annotation.JsonProperty", "value");
+		if (jacksonNameFallback != null && !jacksonNameFallback.trim().isEmpty())
+		{
+			return jacksonNameFallback;
+		}
+
+		String gsonNameFallback = CommonUtils.getAnnotationProperty(field, "com.google.gson.annotations.SerializedName", "value");
+		if (gsonNameFallback != null && !gsonNameFallback.trim().isEmpty())
+		{
+			return gsonNameFallback;
+		}
+
+		return field.getName();
+	}
 }
