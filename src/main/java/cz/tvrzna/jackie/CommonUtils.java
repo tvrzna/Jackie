@@ -294,8 +294,6 @@ public class CommonUtils
 	 * @param propertyName
 	 *          the property name
 	 * @return the annotation property
-	 * @throws Exception
-	 *           the exception
 	 */
 	protected static String getAnnotationProperty(AnnotatedElement element, String annotationClassName, String propertyName)
 	{
